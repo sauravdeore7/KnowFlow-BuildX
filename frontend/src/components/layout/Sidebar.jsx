@@ -41,8 +41,8 @@ export default function Sidebar({ open, onClose }) {
               text-sm font-medium transition
               ${
                 active
-                  ? 'bg-brand-600 text-white'
-                  : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  ? 'bg-brand-600 text-white shadow-lg shadow-violet-950/30'
+                  : 'text-text-secondary hover:bg-surface-hover hover:text-text-primary'
               }`}
           >
             <Icon name={item.icon} className="h-5 w-5 shrink-0" />
@@ -64,14 +64,14 @@ export default function Sidebar({ open, onClose }) {
     <>
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-slate-950 px-5 py-8
+        className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border bg-surface px-5 py-8
           transition-transform duration-200 lg:translate-x-0
           ${open ? 'translate-x-0' : '-translate-x-full'}`}
       >
@@ -83,7 +83,7 @@ export default function Sidebar({ open, onClose }) {
           className="mt-10 flex-1 overflow-y-auto"
           aria-label="Main navigation"
         >
-          <p className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <p className="px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
             Workspace
           </p>
 
@@ -93,7 +93,7 @@ export default function Sidebar({ open, onClose }) {
 
           {collaborationItems.length > 0 && (
             <div className="mt-8">
-              <p className="mb-4 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <p className="mb-4 px-3 text-xs font-semibold uppercase tracking-wider text-text-muted">
                 Work & Collaboration
               </p>
 
@@ -105,14 +105,10 @@ export default function Sidebar({ open, onClose }) {
 
           {governanceItems.length > 0 && (
             <div className="mt-8">
-              <div className="mb-4 flex items-center justify-between px-3">
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <div className="mb-4 px-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                   Governance
                 </p>
-
-                <span className="text-[9px] font-semibold uppercase tracking-wider text-slate-500">
-                  Planned
-                </span>
               </div>
 
               <ul className="space-y-1.5">
@@ -122,17 +118,17 @@ export default function Sidebar({ open, onClose }) {
           )}
         </nav>
 
-        <div className="border-t border-slate-800 px-2 pt-5">
-          <p className="text-sm text-slate-400">Logged in as</p>
+        <div className="border-t border-border px-2 pt-5">
+          <p className="text-sm text-text-muted">Logged in as</p>
 
-          <p className="mt-1 text-base font-semibold capitalize text-white">
+          <p className="mt-1 text-base font-semibold capitalize text-text-primary">
             {user.role}
           </p>
 
           <button
             type="button"
             onClick={logout}
-            className="mt-4 flex items-center gap-2 text-sm text-slate-400 transition hover:text-white"
+            className="mt-4 flex items-center gap-2 text-sm text-text-muted transition hover:text-text-primary"
           >
             <Icon name="logout" className="h-4 w-4" />
             Sign out

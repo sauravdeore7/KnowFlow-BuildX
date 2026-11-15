@@ -175,7 +175,7 @@ export default function CreateProjectPage() {
           />
 
           <div className="space-y-5 p-6">
-            <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+            <ul className="divide-y divide-border rounded-xl border border-border">
               {[manager, ...members].map((member, index) => (
                 <li
                   key={member.id}
@@ -184,14 +184,14 @@ export default function CreateProjectPage() {
                   <Avatar name={member.name} size="sm" />
 
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-900">
+                    <p className="truncate text-sm font-medium text-text-primary">
                       {member.name}
                       {index === 0 && (
-                        <span className="text-slate-400"> (you)</span>
+                        <span className="text-text-muted"> (you)</span>
                       )}
                     </p>
 
-                    <p className="truncate text-xs text-slate-500">
+                    <p className="truncate text-xs text-text-muted">
                       {member.role} - {member.email}
                     </p>
                   </div>
@@ -205,7 +205,7 @@ export default function CreateProjectPage() {
                           current.filter((item) => item.id !== member.id),
                         )
                       }
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-red-600"
+                      className="rounded-lg p-1.5 text-text-muted transition hover:bg-rose-500/10 hover:text-rose-300"
                     >
                       <Icon name="x" className="h-4 w-4" />
                     </button>
@@ -256,7 +256,7 @@ export default function CreateProjectPage() {
             </div>
 
             {errors.members && (
-              <p className="text-sm text-red-600">{errors.members}</p>
+              <p className="text-sm text-rose-300">{errors.members}</p>
             )}
           </div>
         </Card>
@@ -278,11 +278,11 @@ export default function CreateProjectPage() {
 
       <aside className="space-y-4">
         <Card className="p-6">
-          <h3 className="text-base font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-text-primary">
             What happens next
           </h3>
 
-          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-600">
+          <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-text-secondary">
             <li>The project appears in your Projects list.</li>
             <li>You can upload authorised documents (Part 2).</li>
             <li>KnowFlow drafts knowledge with source references (Part 2).</li>

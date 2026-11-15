@@ -157,8 +157,8 @@ export default function EditProjectPage() {
 
       <aside className="space-y-4">
         <Card className="p-6">
-          <h3 className="text-base font-semibold text-slate-900">Before saving</h3>
-          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-600">
+          <h3 className="text-base font-semibold text-text-primary">Before saving</h3>
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-text-secondary">
             <li>Changes will update the project details.</li>
             <li>Existing members and documents will be preserved.</li>
             <li>Project knowledge and handover records will remain attached.</li>

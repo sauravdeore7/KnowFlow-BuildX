@@ -87,13 +87,45 @@ def split_values(value):
     else:
         values = str(value).replace("\r", "\n").split("\n")
 
+    known_short_terms = {
+        "ai", "ml", "dl", "nlp", "llm", "rag",
+        "api", "sdk", "sql", "db", "ui", "ux",
+        "html", "css", "js", "ts", "git", "npm",
+        "jwt", "json", "xml", "http", "https",
+        "rest", "cli", "ide", "aws", "gcp",
+        "cpu", "ram", "gpu", "os", "qa", "ci",
+        "cd", "c", "go", "r",
+        "the", "and", "for", "not", "but",
+        "use", "add", "fix", "new", "old",
+        "bug", "run", "set", "get", "yes",
+        "no", "app", "web", "dev", "test",
+        "to", "of", "in", "on", "at", "by",
+        "is", "are", "was", "be", "do",
+    }
+
     result = []
 
     for item in values:
         cleaned = str(item).strip().lstrip("-•* ").strip()
 
-        if cleaned:
-            result.append(cleaned)
+        if not cleaned:
+            continue
+
+        words = cleaned.lower().split()
+
+        # Filter suspicious lines containing only short,
+        # unrecognised tokens.
+        if (
+            len(words) >= 2
+            and all(len(word) <= 3 for word in words)
+            and not all(
+                word.strip(".,:;!?()[]{}'\"") in known_short_terms
+                for word in words
+            )
+        ):
+            continue
+
+        result.append(cleaned)
 
     return result
 

@@ -29,6 +29,22 @@ function formatEntryTime(value) {
   })
 }
 
+function formatKnowledgeSource(source) {
+  if (!source) return ''
+
+  if (typeof source === 'string') return source
+
+  if (typeof source !== 'object') return String(source)
+
+  const details = [
+    source.source_type,
+    source.field,
+    source.entry_date ? formatEntryDate(source.entry_date) : null,
+  ].filter(Boolean)
+
+  return details.length ? details.join(' · ') : 'Journal entry'
+}
+
 function getTaskCount(entries) {
   return entries.reduce((total, entry) => {
     const tasks = (entry.completedTasks || '')
@@ -42,17 +58,17 @@ function getTaskCount(entries) {
 
 function MetricCard({ label, value, description, icon }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 transition hover:border-violet-500/30">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-500">{label}</p>
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-lg text-blue-700">
+        <p className="text-sm font-medium text-text-secondary">{label}</p>
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-lg text-violet-300">
           {icon}
         </span>
       </div>
-      <p className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+      <p className="mt-4 text-3xl font-bold tracking-tight text-text-primary">
         {value}
       </p>
-      <p className="mt-1 text-xs text-slate-500">{description}</p>
+      <p className="mt-1 text-xs text-text-muted">{description}</p>
     </div>
   )
 }
@@ -61,20 +77,20 @@ function EntrySection({ title, content, color = 'slate' }) {
   if (!content?.trim()) return null
 
   const styles = {
-    slate: 'bg-slate-50 border-slate-200',
-    green: 'bg-green-50 border-green-100',
-    amber: 'bg-amber-50 border-amber-100',
-    blue: 'bg-blue-50 border-blue-100',
-    red: 'bg-red-50 border-red-100',
-    violet: 'bg-violet-50 border-violet-100',
+    slate: 'bg-surface-hover/70 border-border',
+    green: 'bg-emerald-500/[0.07] border-emerald-400/20',
+    amber: 'bg-amber-500/[0.07] border-amber-400/20',
+    blue: 'bg-sky-500/[0.07] border-sky-400/20',
+    red: 'bg-red-500/[0.07] border-red-400/20',
+    violet: 'bg-violet-500/[0.08] border-violet-400/20',
   }
 
   return (
     <div className={`rounded-xl border p-3 ${styles[color]}`}>
-      <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+      <p className="mb-1 text-xs font-bold uppercase tracking-wide text-text-muted">
         {title}
       </p>
-      <p className="whitespace-pre-line text-sm leading-6 text-slate-700">
+      <p className="whitespace-pre-line text-sm leading-6 text-text-secondary">
         {content}
       </p>
     </div>
@@ -87,19 +103,19 @@ function JournalEntryCard({ entry, index }) {
   const hasCompleted = Boolean(entry.completedTasks?.trim())
 
   return (
-    <article className="relative ml-3 border-l-2 border-blue-100 pb-7 pl-7 last:border-l-transparent last:pb-0">
-      <span className="absolute -left-[9px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-[3px] border-blue-500 bg-white" />
+    <article className="relative ml-3 border-l-2 border-violet-500/30 pb-7 pl-7 last:border-l-transparent last:pb-0">
+      <span className="absolute -left-[9px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-[3px] border-violet-400 bg-surface" />
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-200 hover:shadow-md">
+      <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 transition hover:border-violet-500/30 hover:shadow-xl hover:shadow-violet-950/10">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-300">
               {formatEntryDate(entry.date || entry.createdAt)}
             </p>
-            <h3 className="mt-1 text-base font-bold text-slate-900">
+            <h3 className="mt-1 text-base font-bold text-text-primary">
               Journal Entry {index + 1}
             </h3>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-text-muted">
               Recorded by {entry.createdBy || 'Unknown employee'}
               {entry.createdAt && ` · ${formatEntryTime(entry.createdAt)}`}
             </p>
@@ -107,17 +123,17 @@ function JournalEntryCard({ entry, index }) {
 
           <div className="flex flex-wrap gap-2">
             {hasCompleted && (
-              <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+              <span className="rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
                 Completed
               </span>
             )}
             {hasBlocker && (
-              <span className="rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700">
+              <span className="rounded-full border border-red-400/20 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-300">
                 Blocker
               </span>
             )}
             {hasDecision && (
-              <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+              <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs font-semibold text-violet-300">
                 Decision
               </span>
             )}
@@ -214,32 +230,32 @@ export default function JournalHistoryPage() {
       <section>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-700">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-300">
               Project Knowledge Workspace
             </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
               Journal History
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-text-muted">
               View daily work records, decisions, blockers and progress across your projects.
             </p>
           </div>
-          <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-800">
+          <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-xs font-semibold text-violet-300">
             {projects.length} Projects Available
           </span>
         </div>
       </section>
 
-      <section className="rounded-2xl border-2 border-blue-300 bg-blue-50 p-5 shadow-sm sm:p-6">
+      <section className="rounded-2xl border border-violet-400/25 bg-gradient-to-br from-violet-500/[0.12] via-surface-raised to-indigo-500/[0.08] p-5 shadow-lg shadow-black/10 sm:p-6">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-700 text-lg text-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/15 text-lg text-violet-300">
             ▦
           </span>
           <div>
-            <label htmlFor="journal-project" className="block text-sm font-bold text-blue-950">
+            <label htmlFor="journal-project" className="block text-sm font-bold text-text-primary">
               Select Project
             </label>
-            <p className="text-xs text-blue-800">
+            <p className="text-xs text-text-secondary">
               Switch projects to view their complete journal history
             </p>
           </div>
@@ -249,7 +265,7 @@ export default function JournalHistoryPage() {
           id="journal-project"
           value={selectedProjectId}
           onChange={(event) => handleProjectChange(event.target.value)}
-          className="mt-4 w-full rounded-xl border-2 border-blue-300 bg-white px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100"
+          className="mt-4 w-full rounded-xl border border-border-strong bg-surface px-4 py-3 text-sm font-semibold text-text-primary shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15"
         >
           {projects.map((project) => (
             <option key={project.id} value={project.id}>
@@ -259,16 +275,16 @@ export default function JournalHistoryPage() {
         </select>
 
         {selectedProject && (
-          <p className="mt-3 text-xs text-blue-800">
-            Currently viewing: <strong>{selectedProject.name}</strong>
+          <p className="mt-3 text-xs text-text-secondary">
+            Currently viewing: <strong className="text-violet-300">{selectedProject.name}</strong>
           </p>
         )}
       </section>
 
       {!projects.length ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-10 text-center">
-          <h2 className="text-lg font-bold text-slate-900">No projects available</h2>
-          <p className="mt-2 text-sm text-slate-500">
+        <div className="rounded-2xl border border-border bg-surface-raised p-10 text-center">
+          <h2 className="text-lg font-bold text-text-primary">No projects available</h2>
+          <p className="mt-2 text-sm text-text-muted">
             Projects available to your account will appear here.
           </p>
         </div>
@@ -295,11 +311,11 @@ export default function JournalHistoryPage() {
             />
           </section>
 
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-100 p-5 sm:p-6">
+          <section className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-lg shadow-black/10">
+            <div className="border-b border-border p-5 sm:p-6">
               <div>
-                <h2 className="text-lg font-bold text-slate-900">All Journal Entries</h2>
-                <p className="mt-1 text-sm text-slate-500">
+                <h2 className="text-lg font-bold text-text-primary">All Journal Entries</h2>
+                <p className="mt-1 text-sm text-text-muted">
                   Search, filter and review recorded project activity.
                 </p>
               </div>
@@ -310,7 +326,7 @@ export default function JournalHistoryPage() {
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search work, tasks, decisions, blockers..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
+                  className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-faint focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
                 />
               </div>
 
@@ -322,8 +338,8 @@ export default function JournalHistoryPage() {
                     onClick={() => setActiveFilter(filter)}
                     className={`rounded-full px-4 py-2 text-xs font-semibold transition ${
                       activeFilter === filter
-                        ? 'bg-blue-700 text-white shadow-sm'
-                        : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:text-blue-700'
+                        ? 'border border-violet-400/30 bg-violet-600 text-white shadow-lg shadow-violet-950/30'
+                        : 'border border-border bg-surface text-text-secondary hover:border-violet-400/40 hover:bg-surface-hover hover:text-violet-300'
                     }`}
                   >
                     {filter}
@@ -332,24 +348,24 @@ export default function JournalHistoryPage() {
               </div>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <label className="text-xs font-semibold text-slate-600">
+                <label className="text-xs font-semibold text-text-secondary">
                   From
                   <input
                     type="date"
                     value={startDate}
                     max={endDate || undefined}
                     onChange={(event) => setStartDate(event.target.value)}
-                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-700"
+                    className="mt-1 block w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm font-normal text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
                   />
                 </label>
-                <label className="text-xs font-semibold text-slate-600">
+                <label className="text-xs font-semibold text-text-secondary">
                   To
                   <input
                     type="date"
                     value={endDate}
                     min={startDate || undefined}
                     onChange={(event) => setEndDate(event.target.value)}
-                    className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-normal text-slate-700"
+                    className="mt-1 block w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm font-normal text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
                   />
                 </label>
               </div>
@@ -357,7 +373,7 @@ export default function JournalHistoryPage() {
 
             <div className="p-5 sm:p-6">
               <div className="mb-6 flex items-center justify-between gap-3">
-                <p className="text-sm font-semibold text-slate-700">
+                <p className="text-sm font-semibold text-text-secondary">
                   {filteredEntries.length} {filteredEntries.length === 1 ? 'entry' : 'entries'} found
                 </p>
                 {(search || activeFilter !== 'All Entries' || startDate || endDate) && (
@@ -369,7 +385,7 @@ export default function JournalHistoryPage() {
                       setStartDate('')
                       setEndDate('')
                     }}
-                    className="text-xs font-semibold text-blue-700 hover:text-blue-900"
+                    className="text-xs font-semibold text-violet-300 transition hover:text-violet-200"
                   >
                     Clear filters
                   </button>
@@ -387,11 +403,11 @@ export default function JournalHistoryPage() {
                   ))}
                 </div>
               ) : (
-                <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-5 py-12 text-center">
-                  <p className="text-base font-semibold text-slate-800">
+                <div className="rounded-xl border border-dashed border-border-strong bg-surface-hover/50 px-5 py-12 text-center">
+                  <p className="text-base font-semibold text-text-primary">
                     {entries.length ? 'No matching entries found' : 'No journal entries yet'}
                   </p>
-                  <p className="mt-2 text-sm text-slate-500">
+                  <p className="mt-2 text-sm text-text-muted">
                     {entries.length
                       ? 'Try changing your search or filters.'
                       : 'Daily work records will appear here when employees save their journals.'}
@@ -401,16 +417,16 @@ export default function JournalHistoryPage() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-5 sm:p-6">
+          <section className="rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.10] via-surface-raised to-indigo-500/[0.08] p-5 shadow-lg shadow-black/10 sm:p-6">
             <div className="flex items-start gap-3">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-700 text-xl text-white">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/15 text-xl text-violet-300">
                 ✦
               </span>
               <div>
-                <h2 className="text-base font-bold text-blue-950">
+                <h2 className="text-base font-bold text-text-primary">
                   Cumulative Project Knowledge
                 </h2>
-                <p className="mt-1 text-sm leading-6 text-blue-900">
+                <p className="mt-1 text-sm leading-6 text-text-secondary">
                   Daily journal entries contribute to the project's evolving knowledge.
                   When a handover is initiated, the captured activity can be consolidated
                   into one handover report for review and approval.
@@ -419,11 +435,11 @@ export default function JournalHistoryPage() {
             </div>
 
             {selectedProject.knowledge?.summary && (
-              <div className="mt-5 rounded-xl border border-blue-100 bg-white/80 p-4">
-                <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
+              <div className="mt-5 rounded-xl border border-border bg-surface/80 p-4">
+                <p className="text-xs font-bold uppercase tracking-wide text-violet-300">
                   Current Knowledge Summary
                 </p>
-                <p className="mt-2 text-sm leading-6 text-slate-700">
+                <p className="mt-2 text-sm leading-6 text-text-secondary">
                   {selectedProject.knowledge.summary}
                 </p>
               </div>
@@ -434,15 +450,15 @@ export default function JournalHistoryPage() {
                 {selectedProject.knowledge.items.map((item) => (
                   <div
                     key={item.id}
-                    className="rounded-lg border border-blue-100 bg-white/80 p-3"
+                    className="rounded-lg border border-border bg-surface/80 p-3"
                   >
-                    <p className="text-xs font-bold uppercase text-blue-700">
+                    <p className="text-xs font-bold uppercase text-violet-300">
                       {item.type}
                     </p>
-                    <p className="mt-1 text-sm text-slate-700">{item.text}</p>
+                    <p className="mt-1 text-sm text-text-secondary">{item.text}</p>
                     {item.source && (
-                      <p className="mt-2 text-xs text-slate-400">
-                        Source: {item.source}
+                      <p className="mt-2 text-xs text-text-muted">
+                        Source: {formatKnowledgeSource(item.source)}
                       </p>
                     )}
                   </div>
@@ -450,7 +466,7 @@ export default function JournalHistoryPage() {
               </div>
             )}
 
-            <p className="mt-4 border-t border-blue-200 pt-3 text-xs leading-5 text-blue-800">
+            <p className="mt-4 border-t border-border pt-3 text-xs leading-5 text-text-muted">
               Daily journal entries are not individually submitted for manager approval.
               The consolidated handover follows the review and approval workflow.
             </p>

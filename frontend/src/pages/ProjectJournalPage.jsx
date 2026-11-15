@@ -70,17 +70,20 @@ export default function ProjectJournalPage() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl bg-gradient-to-r from-blue-950 to-indigo-900 p-6 text-white shadow-lg sm:p-8">
-        <p className="text-xs font-bold uppercase tracking-widest text-blue-200">
-          KnowFlow Project Knowledge
-        </p>
-        <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-          Project Journal History
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-blue-100">
-          Select a project to explore its complete daily work history,
-          decisions, completed tasks and pending activities from day one.
-        </p>
+      <section className="relative overflow-hidden rounded-2xl border border-violet-400/20 bg-gradient-to-br from-[#17123b] via-[#11132e] to-[#101b3b] p-6 text-white shadow-xl shadow-black/20 sm:p-8">
+        <div className="pointer-events-none absolute -right-16 -top-24 h-64 w-64 rounded-full bg-violet-500/15 blur-3xl" />
+        <div className="relative">
+          <p className="text-xs font-bold uppercase tracking-widest text-violet-300">
+            KnowFlow Project Knowledge
+          </p>
+          <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+            Project Journal History
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-indigo-100/80">
+            Select a project to explore its complete daily work history,
+            decisions, completed tasks and pending activities from day one.
+          </p>
+        </div>
       </section>
 
       <SampleDataNotice />
@@ -100,11 +103,11 @@ export default function ProjectJournalPage() {
         </Card>
       ) : (
         <>
-          <Card className="border border-blue-200 bg-blue-50/50">
+          <Card className="border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.08] to-transparent">
             <div className="p-5 sm:p-6">
               <label
                 htmlFor="journal-project"
-                className="mb-2 block text-sm font-bold text-slate-800"
+                className="mb-2 block text-sm font-bold text-text-primary"
               >
                 Select Project
               </label>
@@ -114,7 +117,7 @@ export default function ProjectJournalPage() {
                 onChange={(event) =>
                   setSelectedProjectId(event.target.value)
                 }
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                className="w-full rounded-xl border border-border-strong bg-surface px-4 py-3 text-sm font-semibold text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
               >
                 {assignedProjects.map((item) => (
                   <option key={item.id} value={item.id}>
@@ -122,7 +125,7 @@ export default function ProjectJournalPage() {
                   </option>
                 ))}
               </select>
-              <p className="mt-2 text-xs text-slate-500">
+              <p className="mt-2 text-xs text-text-muted">
                 Only projects you are authorised to access are displayed.
               </p>
             </div>
@@ -130,16 +133,16 @@ export default function ProjectJournalPage() {
 
           {project && (
             <>
-              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                    <p className="text-xs font-bold uppercase tracking-wide text-violet-300">
                       Selected Project
                     </p>
-                    <h3 className="mt-2 text-xl font-bold text-slate-900">
+                    <h3 className="mt-2 text-xl font-bold text-text-primary">
                       {project.name}
                     </h3>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-text-muted">
                       {project.description}
                     </p>
                   </div>
@@ -160,19 +163,19 @@ export default function ProjectJournalPage() {
 
               <div className="grid gap-4 sm:grid-cols-3">
                 <Card className="p-5">
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-text-secondary">
                     Total Entries
                   </p>
-                  <p className="mt-2 text-3xl font-bold text-slate-900">
+                  <p className="mt-2 text-3xl font-bold text-text-primary">
                     {entries.length}
                   </p>
                 </Card>
 
                 <Card className="p-5">
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-text-secondary">
                     First Entry
                   </p>
-                  <p className="mt-2 text-lg font-bold text-slate-900">
+                  <p className="mt-2 text-lg font-bold text-text-primary">
                     {entries[0]?.date
                       ? formatDate(entries[0].date)
                       : entries[0]?.createdAt
@@ -182,10 +185,10 @@ export default function ProjectJournalPage() {
                 </Card>
 
                 <Card className="p-5">
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-text-secondary">
                     Latest Entry
                   </p>
-                  <p className="mt-2 text-lg font-bold text-slate-900">
+                  <p className="mt-2 text-lg font-bold text-text-primary">
                     {entries.length
                       ? formatDate(
                           entries[entries.length - 1].date ||
@@ -228,47 +231,47 @@ export default function ProjectJournalPage() {
                       return (
                         <details
                           key={entry.id}
-                          className="group overflow-hidden rounded-xl border border-slate-200 bg-white"
+                          className="group overflow-hidden rounded-xl border border-border bg-surface-raised transition hover:border-violet-500/30"
                         >
-                          <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-4 p-5 hover:bg-blue-50/50">
+                          <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-4 p-5 transition hover:bg-surface-hover">
                             <div className="flex min-w-0 items-center gap-4">
-                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-sm font-bold text-blue-800">
+                              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-violet-400/20 bg-violet-500/10 text-sm font-bold text-violet-300">
                                 {String(index + 1).padStart(2, '0')}
                               </div>
                               <div className="min-w-0">
-                                <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                                <p className="text-xs font-bold uppercase tracking-wide text-violet-300">
                                   Day {index + 1}
                                 </p>
-                                <h4 className="mt-1 font-bold text-slate-900">
+                                <h4 className="mt-1 font-bold text-text-primary">
                                   {entry.date
                                     ? formatDate(entry.date)
                                     : entry.createdAt
                                       ? formatDate(entry.createdAt)
                                       : 'Date not specified'}
                                 </h4>
-                                <p className="mt-1 truncate text-sm text-slate-600">
+                                <p className="mt-1 truncate text-sm text-text-secondary">
                                   {summary}
                                 </p>
                               </div>
                             </div>
 
                             <div className="flex items-center gap-3">
-                              <span className="text-xs font-medium text-slate-500">
+                              <span className="text-xs font-medium text-text-muted">
                                 {entry.createdBy || 'Employee'}
                               </span>
                               <Icon
                                 name="chevronDown"
-                                className="h-5 w-5 text-slate-500 transition-transform group-open:rotate-180"
+                                className="h-5 w-5 text-text-muted transition-transform group-open:rotate-180"
                               />
                             </div>
                           </summary>
 
-                          <div className="border-t border-slate-200 bg-slate-50 p-5">
+                          <div className="border-t border-border bg-surface/70 p-5">
                             <div className="mb-4">
-                              <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                              <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
                                 Recorded By
                               </p>
-                              <p className="mt-1 text-sm font-semibold text-slate-800">
+                              <p className="mt-1 text-sm font-semibold text-text-primary">
                                 {entry.createdBy || 'Employee'}
                               </p>
                             </div>
@@ -283,12 +286,12 @@ export default function ProjectJournalPage() {
                                 .map(([label, key]) => (
                                   <div
                                     key={key}
-                                    className="rounded-xl border border-slate-200 bg-white p-4"
+                                    className="rounded-xl border border-border bg-surface-raised p-4"
                                   >
-                                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                                    <p className="text-xs font-bold uppercase tracking-wide text-text-muted">
                                       {label}
                                     </p>
-                                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-800">
+                                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-text-secondary">
                                       {entry[key]}
                                     </p>
                                   </div>
@@ -306,8 +309,8 @@ export default function ProjectJournalPage() {
         </>
       )}
 
-      <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-        <strong>Prototype limitation:</strong> Journal history currently
+      <div className="rounded-xl border border-amber-400/20 bg-amber-500/[0.08] p-4 text-sm leading-6 text-amber-200">
+        <strong className="text-amber-300">Prototype limitation:</strong> Journal history currently
         uses temporary application memory. Entries reset when the
         application is refreshed. Permanent database storage will be
         added during backend integration.

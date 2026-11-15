@@ -1,7 +1,10 @@
 
 import { useMemo, useState } from 'react'
 import { useApp } from '../hooks/useApp'
-import { confirmHandover } from '../services/handoverService'
+import {
+  createHandover,
+  confirmHandover,
+} from '../services/handoverService'
 import { downloadDocument } from '../services/documentService'
 
 const CATEGORIES = [
@@ -27,6 +30,7 @@ function matchesEmployee(member, user) {
   return (
     (member.email && member.email.toLowerCase() === user.email?.toLowerCase()) ||
     (member.id && member.id === user.id) ||
+    (member.user_id && member.user_id === user.id) ||
     (member.name && member.name.toLowerCase() === user.name?.toLowerCase())
   )
 }
@@ -90,17 +94,17 @@ function getCategories(journals) {
 function StatusBadge({ status, shared }) {
   if (shared) {
     return (
-      <span className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 ring-1 ring-blue-200">
+      <span className="rounded-full bg-sky-500/15 px-3 py-1.5 text-xs font-semibold text-sky-300 ring-1 ring-sky-400/25">
         Shared with you
       </span>
     )
   }
 
   const styles = {
-    not_started: 'bg-slate-100 text-slate-600 ring-slate-200',
-    awaiting_approval: 'bg-amber-50 text-amber-700 ring-amber-200',
-    changes_requested: 'bg-orange-50 text-orange-700 ring-orange-200',
-    approved: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+    not_started: 'bg-surface-hover text-text-secondary ring-border',
+    awaiting_approval: 'bg-amber-500/15 text-amber-300 ring-amber-400/25',
+    changes_requested: 'bg-orange-500/15 text-orange-300 ring-orange-400/25',
+    approved: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/25',
   }
 
   const labels = {
@@ -123,12 +127,12 @@ function StatusBadge({ status, shared }) {
 
 function EmptyState({ title, description }) {
   return (
-    <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-2xl text-slate-500">
+    <div className="rounded-2xl border border-dashed border-border bg-surface-raised px-6 py-12 text-center">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-hover text-2xl text-text-muted">
         ↗
       </div>
-      <h3 className="mt-4 text-base font-bold text-slate-900">{title}</h3>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+      <h3 className="mt-4 text-base font-bold text-text-primary">{title}</h3>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-text-muted">
         {description}
       </p>
     </div>
@@ -141,17 +145,17 @@ function ProgressStep({ number, title, description, complete, active }) {
       <div
         className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
           complete
-            ? 'bg-emerald-100 text-emerald-700'
+            ? 'bg-emerald-500/15 text-emerald-300'
             : active
-              ? 'bg-blue-600 text-white'
-              : 'bg-slate-100 text-slate-400'
+              ? 'bg-violet-600 text-white'
+              : 'bg-surface-hover text-text-muted'
         }`}
       >
         {complete ? '✓' : number}
       </div>
       <div className="min-w-0 pt-0.5">
-        <p className="text-sm font-semibold text-slate-800">{title}</p>
-        <p className="mt-1 text-xs leading-5 text-slate-500">{description}</p>
+        <p className="text-sm font-semibold text-text-primary">{title}</p>
+        <p className="mt-1 text-xs leading-5 text-text-muted">{description}</p>
       </div>
     </div>
   )
@@ -173,6 +177,12 @@ export default function MyHandoverPage() {
   const [documentBusy, setDocumentBusy] = useState('')
   const [error, setError] = useState('')
 
+  // Create handover form state
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [createProjectId, setCreateProjectId] = useState('')
+  const [createComments, setCreateComments] = useState('')
+  const [creating, setCreating] = useState(false)
+
   const outgoingHandovers = useMemo(() => {
     return projects
       .filter((project) =>
@@ -187,6 +197,27 @@ export default function MyHandoverPage() {
         return { ...project, outgoingMember }
       })
   }, [projects, user])
+
+  // Projects where the logged-in employee is an assigned employee
+  // and does not already have an outgoing handover.
+  const availableProjects = useMemo(() => {
+    return projects.filter((project) => {
+      const isAssignedEmployee = (project.members || []).some((member) => {
+        const role = String(member.role || '').toLowerCase()
+
+        return (
+          matchesEmployee(member, user) &&
+          (role === 'employee' || role === '')
+        )
+      })
+
+      const alreadyHasHandover = outgoingHandovers.some(
+        (handover) => handover.id === project.id,
+      )
+
+      return isAssignedEmployee && !alreadyHasHandover
+    })
+  }, [projects, user, outgoingHandovers])
 
   const incomingHandovers = useMemo(() => {
     return projects.filter((project) => {
@@ -264,6 +295,47 @@ export default function MyHandoverPage() {
       !employeeConfirmation.confirmedAt ||
       selectedOutgoing.handoverStatus === 'changes_requested'
     )
+
+  // Create a handover for the selected project
+  const handleCreateHandover = async (event) => {
+    event.preventDefault()
+
+    if (!createProjectId) {
+      setError('Please select a project.')
+      return
+    }
+
+    setCreating(true)
+    setError('')
+
+    try {
+      await createHandover(
+        user?.accessToken,
+        createProjectId,
+        createComments.trim(),
+      )
+
+      await loadProjects(user?.accessToken)
+
+      setSelectedProjectId(createProjectId)
+      setCreateProjectId('')
+      setCreateComments('')
+      setShowCreateForm(false)
+      setActiveTab('outgoing')
+
+      showToast?.(
+        'Handover created successfully. You can now review your project knowledge.',
+      )
+    } catch (createError) {
+      const message =
+        createError?.message || 'Could not create the handover. Please try again.'
+
+      setError(message)
+      showToast?.(message, 'error')
+    } finally {
+      setCreating(false)
+    }
+  }
 
   const handleSubmitConfirmation = async () => {
     if (!selectedOutgoing) return
@@ -387,21 +459,21 @@ export default function MyHandoverPage() {
     return (
       <div className="space-y-5">
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Journal entries</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+          <div className="rounded-xl border border-border bg-surface p-4">
+            <p className="text-xs font-medium text-text-muted">Journal entries</p>
+            <p className="mt-2 text-2xl font-bold text-text-primary">
               {reportJournals.length}
             </p>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Knowledge items</p>
-            <p className="mt-2 text-2xl font-bold text-slate-900">
+          <div className="rounded-xl border border-border bg-surface p-4">
+            <p className="text-xs font-medium text-text-muted">Knowledge items</p>
+            <p className="mt-2 text-2xl font-bold text-text-primary">
               {reportCategories.reduce((sum, item) => sum + item.items.length, 0)}
             </p>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <p className="text-xs font-medium text-slate-500">Outgoing employee</p>
-            <p className="mt-2 truncate text-base font-bold text-slate-900">
+          <div className="rounded-xl border border-border bg-surface p-4">
+            <p className="text-xs font-medium text-text-muted">Outgoing employee</p>
+            <p className="mt-2 truncate text-base font-bold text-text-primary">
               {getMemberName(outgoingMember)}
             </p>
           </div>
@@ -410,7 +482,7 @@ export default function MyHandoverPage() {
         {reportCategories.map((category) => (
           <section
             key={category.id}
-            className="overflow-hidden rounded-xl border border-slate-200"
+            className="overflow-hidden rounded-xl border border-border"
           >
             <button
               type="button"
@@ -419,54 +491,54 @@ export default function MyHandoverPage() {
                   current === category.id ? '' : category.id,
                 )
               }
-              className="flex w-full items-center justify-between gap-3 bg-white p-4 text-left transition hover:bg-slate-50"
+              className="flex w-full items-center justify-between gap-3 bg-surface-raised p-4 text-left transition hover:bg-surface-hover"
             >
               <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 font-bold text-slate-700">
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-surface-hover font-bold text-violet-300">
                   {category.icon}
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-slate-900">
+                  <p className="text-sm font-bold text-text-primary">
                     {category.title}
                   </p>
-                  <p className="mt-1 text-xs text-slate-500">
+                  <p className="mt-1 text-xs text-text-muted">
                     {category.items.length} recorded items
                   </p>
                 </div>
               </div>
-              <span className="text-lg text-slate-400">
+              <span className="text-lg text-text-muted">
                 {expandedCategory === category.id ? '−' : '+'}
               </span>
             </button>
 
             {expandedCategory === category.id && (
-              <div className="space-y-3 border-t border-slate-200 bg-slate-50/70 p-4">
+              <div className="space-y-3 border-t border-border bg-surface p-4">
                 {category.items.length === 0 ? (
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-text-muted">
                     No entries were recorded in this category.
                   </p>
                 ) : (
                   category.items.map((item, index) => (
                     <div
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-white p-4"
+                      className="rounded-xl border border-border bg-surface-raised p-4"
                     >
                       <div className="flex items-start gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-xs font-bold text-slate-600">
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-surface-hover text-xs font-bold text-text-secondary">
                           {index + 1}
                         </span>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm leading-6 text-slate-800">
+                          <p className="text-sm leading-6 text-text-secondary">
                             {item.text}
                           </p>
                           {permissions.viewSources !== false && (
-                            <p className="mt-2 text-xs text-slate-500">
+                            <p className="mt-2 text-xs text-text-muted">
                               Journal source · {formatDate(item.date)}
                               {item.journalId ? ` · ${item.journalId}` : ''}
                             </p>
                           )}
                           {permissions.viewSources !== false && item.evidence && (
-                            <p className="mt-2 text-xs leading-5 text-slate-500">
+                            <p className="mt-2 text-xs leading-5 text-text-muted">
                               Evidence: {item.evidence}
                             </p>
                           )}
@@ -481,7 +553,7 @@ export default function MyHandoverPage() {
         ))}
 
         {!readOnly && (
-          <p className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-xs leading-5 text-blue-800">
+          <p className="rounded-xl border border-sky-400/25 bg-sky-500/10 p-4 text-xs leading-5 text-sky-200">
             This report is organised from your recorded journal entries. Review
             the information carefully before confirming it. It is not an
             independently verified AI-generated report.
@@ -493,10 +565,10 @@ export default function MyHandoverPage() {
 
   return (
     <div className="space-y-6 pb-10">
-      <header className="overflow-hidden rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 p-6 text-white shadow-sm sm:p-8">
+      <header className="overflow-hidden rounded-2xl border border-violet-400/15 bg-gradient-to-r from-[#09091d] via-[#11112b] to-[#211344] p-6 text-white shadow-lg shadow-violet-950/20 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-5">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-200">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-300">
               Employee Workspace
             </p>
             <h1 className="mt-2 text-2xl font-bold sm:text-3xl">My Handover</h1>
@@ -505,8 +577,8 @@ export default function MyHandoverPage() {
               knowledge that has been shared with you.
             </p>
           </div>
-          <div className="rounded-xl border border-white/15 bg-white/10 px-4 py-3">
-            <p className="text-xs text-blue-100">Signed in as</p>
+          <div className="rounded-xl border border-white/15 bg-white/5 px-4 py-3 backdrop-blur-sm">
+            <p className="text-xs text-violet-200">Signed in as</p>
             <p className="mt-1 text-sm font-semibold text-white">
               {user?.name || user?.email}
             </p>
@@ -524,22 +596,22 @@ export default function MyHandoverPage() {
           }}
           className={`rounded-2xl border p-5 text-left transition ${
             activeTab === 'outgoing'
-              ? 'border-blue-300 bg-blue-50 shadow-sm ring-2 ring-blue-100'
-              : 'border-slate-200 bg-white hover:border-slate-300'
+              ? 'border-violet-500/50 bg-violet-500/10 shadow-lg shadow-violet-950/15 ring-1 ring-violet-500/30'
+              : 'border-border bg-surface-raised hover:border-violet-500/30 hover:bg-surface-hover'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-600">
+            <span className="text-sm font-semibold text-text-secondary">
               Outgoing handovers
             </span>
-            <span className="rounded-lg bg-white px-3 py-1 text-sm font-bold text-slate-800">
+            <span className="rounded-lg border border-border bg-surface-hover px-3 py-1 text-sm font-bold text-text-primary">
               {outgoingHandovers.length}
             </span>
           </div>
-          <p className="mt-3 text-lg font-bold text-slate-900">
+          <p className="mt-3 text-lg font-bold text-text-primary">
             My knowledge transfer
           </p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-muted">
             Review and confirm the knowledge recorded during your work.
           </p>
         </button>
@@ -550,25 +622,26 @@ export default function MyHandoverPage() {
             setActiveTab('incoming')
             setSelectedProjectId('')
             setError('')
+            setShowCreateForm(false)
           }}
           className={`rounded-2xl border p-5 text-left transition ${
             activeTab === 'incoming'
-              ? 'border-blue-300 bg-blue-50 shadow-sm ring-2 ring-blue-100'
-              : 'border-slate-200 bg-white hover:border-slate-300'
+              ? 'border-violet-500/50 bg-violet-500/10 shadow-lg shadow-violet-950/15 ring-1 ring-violet-500/30'
+              : 'border-border bg-surface-raised hover:border-violet-500/30 hover:bg-surface-hover'
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-slate-600">
+            <span className="text-sm font-semibold text-text-secondary">
               Incoming handovers
             </span>
-            <span className="rounded-lg bg-white px-3 py-1 text-sm font-bold text-slate-800">
+            <span className="rounded-lg border border-border bg-surface-hover px-3 py-1 text-sm font-bold text-text-primary">
               {incomingHandovers.length}
             </span>
           </div>
-          <p className="mt-3 text-lg font-bold text-slate-900">
+          <p className="mt-3 text-lg font-bold text-text-primary">
             Shared with me
           </p>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-muted">
             Explore approved project knowledge assigned to you.
           </p>
         </button>
@@ -576,17 +649,141 @@ export default function MyHandoverPage() {
 
       {activeTab === 'outgoing' && (
         <>
+          {/* Create Handover action */}
+          <section className="rounded-2xl border border-violet-400/20 bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-bold text-text-primary">
+                  Start a new handover
+                </h2>
+                <p className="mt-1 text-sm text-text-muted">
+                  Create a knowledge transfer for any project you're assigned to.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCreateForm((current) => !current)
+                  setError('')
+                  setCreateProjectId('')
+                  setCreateComments('')
+                }}
+                disabled={availableProjects.length === 0 && !showCreateForm}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/25 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <span className="text-lg leading-none">+</span>
+                {showCreateForm ? 'Close form' : 'Create Handover'}
+              </button>
+            </div>
+
+            {showCreateForm && (
+              <form
+                onSubmit={handleCreateHandover}
+                className="mt-6 space-y-5 border-t border-border pt-5"
+              >
+                <div>
+                  <label
+                    htmlFor="create-handover-project"
+                    className="mb-2 block text-sm font-semibold text-text-primary"
+                  >
+                    Select project
+                  </label>
+                  <select
+                    id="create-handover-project"
+                    value={createProjectId}
+                    onChange={(event) => setCreateProjectId(event.target.value)}
+                    required
+                    disabled={creating}
+                    className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 disabled:opacity-60"
+                  >
+                    <option value="">Choose an assigned project</option>
+                    {availableProjects.map((project) => (
+                      <option key={project.id} value={project.id}>
+                        {project.name}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="mt-2 text-xs text-text-muted">
+                    Only projects where you are assigned as an employee are listed.
+                  </p>
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="create-handover-comments"
+                    className="mb-2 block text-sm font-semibold text-text-primary"
+                  >
+                    Initial handover note
+                    <span className="ml-2 font-normal text-text-muted">
+                      (Optional)
+                    </span>
+                  </label>
+                  <textarea
+                    id="create-handover-comments"
+                    rows={4}
+                    maxLength={2000}
+                    value={createComments}
+                    onChange={(event) => setCreateComments(event.target.value)}
+                    disabled={creating}
+                    placeholder="Add context about why this handover is being created or anything your manager should know..."
+                    className="w-full resize-y rounded-xl border border-border bg-surface px-4 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 disabled:opacity-60"
+                  />
+                  <p className="mt-1 text-right text-xs text-text-muted">
+                    {createComments.length}/2000
+                  </p>
+                </div>
+
+                {error && (
+                  <p className="rounded-lg border border-rose-400/25 bg-rose-500/10 p-3 text-sm text-rose-300">
+                    {error}
+                  </p>
+                )}
+
+                <div className="flex flex-wrap justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateForm(false)
+                      setCreateProjectId('')
+                      setCreateComments('')
+                      setError('')
+                    }}
+                    disabled={creating}
+                    className="rounded-xl border border-border px-5 py-3 text-sm font-semibold text-text-secondary transition hover:bg-surface-hover disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={creating || !createProjectId}
+                    className="rounded-xl bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/25 transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {creating ? 'Creating...' : 'Create Handover'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {!showCreateForm && availableProjects.length === 0 && (
+              <p className="mt-4 text-xs text-text-muted">
+                There are no additional assigned projects available for a new handover.
+              </p>
+            )}
+          </section>
+
           {outgoingHandovers.length === 0 ? (
             <EmptyState
-              title="No outgoing handovers assigned"
-              description="When you are marked as a departing employee in a project, its handover will appear here for your review and confirmation."
+              title="No outgoing handovers yet"
+              description="Create a handover for one of your assigned projects. Your project journals will be organised into a report for review."
             />
           ) : (
             <>
-              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10">
                 <label
                   htmlFor="outgoing-project"
-                  className="mb-2 block text-sm font-bold text-slate-800"
+                  className="mb-2 block text-sm font-bold text-text-primary"
                 >
                   Select project
                 </label>
@@ -598,7 +795,7 @@ export default function MyHandoverPage() {
                     setEmployeeResponse('')
                     setError('')
                   }}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm font-medium text-text-primary outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15"
                 >
                   {outgoingHandovers.map((project) => (
                     <option key={project.id} value={project.id}>
@@ -610,16 +807,16 @@ export default function MyHandoverPage() {
 
               {selectedOutgoing && (
                 <>
-                  <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                  <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                        <p className="text-xs font-bold uppercase tracking-wider text-text-muted">
                           Outgoing project
                         </p>
-                        <h2 className="mt-1 text-xl font-bold text-slate-900">
+                        <h2 className="mt-1 text-xl font-bold text-text-primary">
                           {selectedOutgoing.name}
                         </h2>
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-text-muted">
                           {getMemberName(selectedOutgoing.outgoingMember)}
                         </p>
                       </div>
@@ -627,21 +824,21 @@ export default function MyHandoverPage() {
                     </div>
 
                     <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                      <div className="rounded-xl bg-slate-50 p-4">
-                        <p className="text-xs text-slate-500">Journal entries</p>
-                        <p className="mt-2 text-2xl font-bold text-slate-900">
+                      <div className="rounded-xl border border-border bg-surface p-4">
+                        <p className="text-xs text-text-muted">Journal entries</p>
+                        <p className="mt-2 text-2xl font-bold text-text-primary">
                           {outgoingJournals.length}
                         </p>
                       </div>
-                      <div className="rounded-xl bg-slate-50 p-4">
-                        <p className="text-xs text-slate-500">Knowledge items</p>
-                        <p className="mt-2 text-2xl font-bold text-slate-900">
+                      <div className="rounded-xl border border-border bg-surface p-4">
+                        <p className="text-xs text-text-muted">Knowledge items</p>
+                        <p className="mt-2 text-2xl font-bold text-text-primary">
                           {totalItems}
                         </p>
                       </div>
-                      <div className="rounded-xl bg-slate-50 p-4">
-                        <p className="text-xs text-slate-500">Confirmation</p>
-                        <p className="mt-2 text-sm font-bold text-slate-900">
+                      <div className="rounded-xl border border-border bg-surface p-4">
+                        <p className="text-xs text-text-muted">Confirmation</p>
+                        <p className="mt-2 text-sm font-bold text-text-primary">
                           {employeeConfirmation.confirmedAt
                             ? 'Submitted'
                             : 'Pending'}
@@ -650,12 +847,12 @@ export default function MyHandoverPage() {
                     </div>
                   </section>
 
-                  <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                  <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
                     <div className="mb-5">
-                      <h2 className="text-lg font-bold text-slate-900">
+                      <h2 className="text-lg font-bold text-text-primary">
                         Handover progress
                       </h2>
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm text-text-muted">
                         Follow each stage of your knowledge transfer.
                       </p>
                     </div>
@@ -689,26 +886,26 @@ export default function MyHandoverPage() {
 
                   {selectedOutgoing.handoverStatus === 'changes_requested' &&
                     outgoingReview.managerFeedback && (
-                      <section className="rounded-2xl border border-orange-200 bg-orange-50 p-5">
-                        <p className="text-sm font-bold text-orange-900">
+                      <section className="rounded-2xl border border-orange-400/25 bg-orange-500/10 p-5">
+                        <p className="text-sm font-bold text-orange-300">
                           Manager requested changes
                         </p>
-                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-orange-800">
+                        <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-orange-200">
                           {outgoingReview.managerFeedback}
                         </p>
-                        <p className="mt-3 text-xs text-orange-700">
+                        <p className="mt-3 text-xs text-orange-300">
                           Review the report again, make any necessary updates
                           to your records, and add a response before resubmitting.
                         </p>
                       </section>
                     )}
 
-                  <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                  <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
                     <div className="mb-5">
-                      <h2 className="text-lg font-bold text-slate-900">
+                      <h2 className="text-lg font-bold text-text-primary">
                         Review your handover report
                       </h2>
-                      <p className="mt-1 text-sm text-slate-500">
+                      <p className="mt-1 text-sm text-text-muted">
                         Check the work, decisions, pending tasks, dependencies,
                         risks and next actions recorded in your journals.
                       </p>
@@ -717,48 +914,48 @@ export default function MyHandoverPage() {
                   </section>
 
                   {outgoingReview.approvedAt ? (
-                    <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-                      <p className="font-bold text-emerald-900">
+                    <section className="rounded-2xl border border-emerald-400/25 bg-emerald-500/10 p-5">
+                      <p className="font-bold text-emerald-300">
                         Your handover has been approved
                       </p>
-                      <p className="mt-2 text-sm text-emerald-800">
+                      <p className="mt-2 text-sm text-emerald-200">
                         Approved by {outgoingReview.approvedBy || 'Manager'}
                         {outgoingReview.approvedAt
                           ? ` · ${formatDate(outgoingReview.approvedAt)}`
                           : ''}
                       </p>
                       {outgoingReview.goodWishes && (
-                        <div className="mt-4 rounded-xl bg-white p-4">
-                          <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                        <div className="mt-4 rounded-xl border border-border bg-surface-raised p-4">
+                          <p className="text-xs font-bold uppercase tracking-wider text-text-muted">
                             Message from your manager
                           </p>
-                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-700">
+                          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-text-secondary">
                             {outgoingReview.goodWishes}
                           </p>
                         </div>
                       )}
                     </section>
                   ) : (
-                    <section className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm sm:p-6">
-                      <h2 className="text-lg font-bold text-slate-900">
+                    <section className="rounded-2xl border border-violet-400/25 bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
+                      <h2 className="text-lg font-bold text-text-primary">
                         Employee confirmation
                       </h2>
-                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                      <p className="mt-1 text-sm leading-6 text-text-muted">
                         Confirm that you have reviewed the knowledge organised
                         from your journal entries. Your confirmation sends the
                         handover to your manager for review.
                       </p>
 
                       {employeeConfirmation.confirmedAt && (
-                        <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-                          <p className="text-sm font-bold text-emerald-800">
+                        <div className="mt-4 rounded-xl border border-emerald-400/25 bg-emerald-500/10 p-4">
+                          <p className="text-sm font-bold text-emerald-300">
                             Previously submitted
                           </p>
-                          <p className="mt-1 text-xs text-emerald-700">
+                          <p className="mt-1 text-xs text-emerald-200">
                             {formatDate(employeeConfirmation.confirmedAt)}
                           </p>
                           {selectedOutgoing.handoverStatus !== 'changes_requested' && (
-                            <p className="mt-2 text-xs text-emerald-700">
+                            <p className="mt-2 text-xs text-emerald-200">
                               Your confirmation is recorded and awaiting manager review.
                             </p>
                           )}
@@ -767,7 +964,7 @@ export default function MyHandoverPage() {
 
                       <label
                         htmlFor="employee-response"
-                        className="mb-2 mt-5 block text-sm font-semibold text-slate-700"
+                        className="mb-2 mt-5 block text-sm font-semibold text-text-secondary"
                       >
                         Response or clarification (optional)
                       </label>
@@ -782,11 +979,11 @@ export default function MyHandoverPage() {
                           (Boolean(employeeConfirmation.confirmedAt) &&
                             selectedOutgoing.handoverStatus !== 'changes_requested')
                         }
-                        className="w-full resize-y rounded-xl border border-slate-300 px-4 py-3 text-sm leading-6 text-slate-700 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500"
+                        className="w-full resize-y rounded-xl border border-border bg-surface px-4 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-muted focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15 disabled:cursor-not-allowed disabled:bg-surface-hover disabled:text-text-muted"
                       />
 
                       {error && (
-                        <p className="mt-3 rounded-lg bg-rose-50 p-3 text-sm text-rose-700">
+                        <p className="mt-3 rounded-lg border border-rose-400/25 bg-rose-500/10 p-3 text-sm text-rose-300">
                           {error}
                         </p>
                       )}
@@ -795,7 +992,7 @@ export default function MyHandoverPage() {
                         type="button"
                         onClick={handleSubmitConfirmation}
                         disabled={!canConfirm}
-                        className="mt-4 w-full rounded-xl bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="mt-4 w-full rounded-xl bg-violet-600 px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-violet-950/25 transition hover:bg-violet-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-raised disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {busy
                           ? 'Submitting...'
@@ -806,7 +1003,7 @@ export default function MyHandoverPage() {
 
                       {selectedOutgoing.handoverStatus === 'awaiting_approval' &&
                         employeeConfirmation.confirmedAt && (
-                          <p className="mt-3 text-center text-xs text-slate-500">
+                          <p className="mt-3 text-center text-xs text-text-muted">
                             Your confirmation is recorded. The manager can now
                             review your handover.
                           </p>
@@ -829,10 +1026,10 @@ export default function MyHandoverPage() {
             />
           ) : (
             <>
-              <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+              <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10">
                 <label
                   htmlFor="incoming-project"
-                  className="mb-2 block text-sm font-bold text-slate-800"
+                  className="mb-2 block text-sm font-bold text-text-primary"
                 >
                   Select shared project
                 </label>
@@ -840,7 +1037,7 @@ export default function MyHandoverPage() {
                   id="incoming-project"
                   value={selectedIncoming?.id || ''}
                   onChange={(event) => setSelectedProjectId(event.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-medium text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm font-medium text-text-primary outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/15"
                 >
                   {incomingHandovers.map((project) => (
                     <option key={project.id} value={project.id}>
@@ -852,16 +1049,16 @@ export default function MyHandoverPage() {
 
               {selectedIncoming && (
                 <>
-                  <section className="rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-5 shadow-sm sm:p-6">
+                  <section className="rounded-2xl border border-violet-400/25 bg-gradient-to-r from-violet-500/10 to-indigo-500/10 p-5 shadow-lg shadow-violet-950/10 sm:p-6">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
-                        <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                        <p className="text-xs font-bold uppercase tracking-wider text-violet-300">
                           Knowledge transfer received
                         </p>
-                        <h2 className="mt-2 text-xl font-bold text-slate-900">
+                        <h2 className="mt-2 text-xl font-bold text-text-primary">
                           {selectedIncoming.name}
                         </h2>
-                        <p className="mt-2 text-sm text-slate-600">
+                        <p className="mt-2 text-sm text-text-secondary">
                           Shared by {incomingReview.sharedBy || 'Project manager'}
                           {incomingReview.sharedAt
                             ? ` · ${formatDate(incomingReview.sharedAt)}`
@@ -873,8 +1070,8 @@ export default function MyHandoverPage() {
                   </section>
 
                   {incomingPermissions.viewReport !== false ? (
-                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-                      <h2 className="mb-5 text-lg font-bold text-slate-900">
+                    <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
+                      <h2 className="mb-5 text-lg font-bold text-text-primary">
                         Approved handover report
                       </h2>
                       {renderReport(selectedIncoming, true)}
@@ -887,32 +1084,32 @@ export default function MyHandoverPage() {
                   )}
 
                   {incomingPermissions.viewDocuments && (
-                    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+                    <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 sm:p-6">
                       <div className="mb-4">
-                        <h2 className="text-lg font-bold text-slate-900">
+                        <h2 className="text-lg font-bold text-text-primary">
                           Supporting documents
                         </h2>
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-text-muted">
                           Project documents available under your assigned permissions.
                         </p>
                       </div>
 
                       {(selectedIncoming.documents || []).length === 0 ? (
-                        <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                        <p className="rounded-xl border border-border bg-surface p-4 text-sm text-text-muted">
                           No supporting documents are registered for this project.
                         </p>
                       ) : (
-                        <div className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+                        <div className="divide-y divide-border rounded-xl border border-border">
                           {selectedIncoming.documents.map((document) => (
                             <div
                               key={document.id}
                               className="flex flex-wrap items-center justify-between gap-3 p-4"
                             >
                               <div className="min-w-0">
-                                <p className="break-all text-sm font-semibold text-slate-800">
+                                <p className="break-all text-sm font-semibold text-text-primary">
                                   {document.name}
                                 </p>
-                                <p className="mt-1 text-xs text-slate-500">
+                                <p className="mt-1 text-xs text-text-muted">
                                   {document.type || 'Project document'} ·{' '}
                                   {document.sizeKb || '—'} KB
                                 </p>
@@ -921,7 +1118,7 @@ export default function MyHandoverPage() {
                                 type="button"
                                 onClick={() => openDocument(document)}
                                 disabled={documentBusy === document.id}
-                                className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="rounded-lg border border-violet-400/30 bg-violet-500/10 px-3 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/20 disabled:cursor-not-allowed disabled:opacity-50"
                               >
                                 {documentBusy === document.id
                                   ? 'Opening...'
@@ -936,11 +1133,11 @@ export default function MyHandoverPage() {
                     </section>
                   )}
 
-                  <section className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                    <p className="text-sm font-bold text-slate-800">
+                  <section className="rounded-xl border border-border bg-surface p-4">
+                    <p className="text-sm font-bold text-text-primary">
                       Read-only access
                     </p>
-                    <p className="mt-1 text-xs leading-5 text-slate-600">
+                    <p className="mt-1 text-xs leading-5 text-text-secondary">
                       This handover is provided for reference. You cannot edit
                       the approved report or change its permissions. Your
                       manager controls access.
@@ -956,8 +1153,8 @@ export default function MyHandoverPage() {
                           key={label}
                           className={`rounded-full px-3 py-1 text-xs font-semibold ${
                             enabled
-                              ? 'bg-emerald-100 text-emerald-700'
-                              : 'bg-slate-200 text-slate-500'
+                              ? 'bg-emerald-500/15 text-emerald-300'
+                              : 'bg-surface-hover text-text-muted'
                           }`}
                         >
                           {label}: {enabled ? 'Allowed' : 'Restricted'}
@@ -972,10 +1169,10 @@ export default function MyHandoverPage() {
         </>
       )}
 
-      <p className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-xs leading-5 text-blue-800">
-        <strong>Backend connected:</strong> Employee handover confirmations
-        and comments are saved to the project database. The manager review and
-        sharing stages are handled separately.
+      <p className="rounded-xl border border-sky-400/25 bg-sky-500/10 p-4 text-xs leading-5 text-sky-200">
+        <strong>Backend connected:</strong> Employee handover creation and
+        confirmations are saved to the project database. The manager review
+        and sharing stages are handled separately.
       </p>
     </div>
   )

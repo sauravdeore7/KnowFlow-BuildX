@@ -62,18 +62,18 @@ function getPriorityStyle(priority) {
   const value = String(priority || '').toLowerCase()
 
   if (value === 'high' || value === 'urgent') {
-    return 'bg-red-50 text-red-700 border-red-200'
+    return 'bg-rose-500/10 text-rose-300 border-rose-500/20'
   }
 
   if (value === 'medium') {
-    return 'bg-amber-50 text-amber-700 border-amber-200'
+    return 'bg-amber-500/10 text-amber-300 border-amber-500/20'
   }
 
   if (value === 'low') {
-    return 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    return 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20'
   }
 
-  return 'bg-slate-50 text-slate-600 border-slate-200'
+  return 'bg-surface-hover text-text-secondary border-border'
 }
 
 function createNotifications(projects, requests, readIds) {
@@ -153,27 +153,27 @@ function getNotificationIcon(type) {
 }
 
 function getNotificationStyle(type) {
-  if (type === 'handover') return 'bg-violet-50 text-violet-700'
-  if (type === 'request') return 'bg-blue-50 text-blue-700'
-  return 'bg-slate-100 text-slate-700'
+  if (type === 'handover') return 'bg-violet-500/10 text-violet-300'
+  if (type === 'request') return 'bg-sky-500/10 text-sky-300'
+  return 'bg-surface-hover text-text-secondary'
 }
 
 function MetricCard({ label, value, description, icon, iconStyle }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10 transition hover:-translate-y-0.5 hover:border-violet-400/20 hover:shadow-lg hover:shadow-black/20">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-medium text-slate-500">{label}</p>
+        <p className="text-sm font-medium text-text-muted">{label}</p>
 
         <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconStyle}`}>
           <Icon name={icon} className="h-5 w-5" />
         </span>
       </div>
 
-      <p className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+      <p className="mt-4 text-3xl font-bold tracking-tight text-text-primary">
         {value}
       </p>
 
-      <p className="mt-1 text-xs text-slate-500">{description}</p>
+      <p className="mt-1 text-xs text-text-muted">{description}</p>
     </div>
   )
 }
@@ -183,14 +183,14 @@ function NotificationCard({ notification, onRead, onOpen }) {
 
   return (
     <article
-      className={`relative overflow-hidden rounded-2xl border p-5 transition hover:shadow-md ${
+      className={`relative overflow-hidden rounded-2xl border p-5 transition hover:border-violet-400/20 hover:shadow-lg hover:shadow-black/10 ${
         notification.read
-          ? 'border-slate-200 bg-white'
-          : 'border-blue-200 bg-blue-50/40'
+          ? 'border-border bg-surface-raised'
+          : 'border-violet-400/25 bg-violet-500/5'
       }`}
     >
       {!notification.read && (
-        <span className="absolute bottom-0 left-0 top-0 w-1 bg-blue-600" />
+        <span className="absolute bottom-0 left-0 top-0 w-1 bg-violet-500" />
       )}
 
       <div className="flex items-start gap-4">
@@ -207,18 +207,18 @@ function NotificationCard({ notification, onRead, onOpen }) {
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="text-sm font-bold text-slate-900">
+                <h3 className="text-sm font-bold text-text-primary">
                   {notification.title}
                 </h3>
 
                 {!notification.read && (
-                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-blue-700">
+                  <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-violet-300">
                     Unread
                   </span>
                 )}
               </div>
 
-              <p className="mt-2 text-sm leading-6 text-slate-600">
+              <p className="mt-2 text-sm leading-6 text-text-secondary">
                 {notification.message}
               </p>
             </div>
@@ -231,44 +231,44 @@ function NotificationCard({ notification, onRead, onOpen }) {
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-              <Icon name="user" className="h-3.5 w-3.5 text-slate-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs font-semibold text-text-secondary">
+              <Icon name="user" className="h-3.5 w-3.5 text-text-muted" />
               {notification.employee}
             </span>
 
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 ring-1 ring-slate-200">
-              <Icon name="folder" className="h-3.5 w-3.5 text-slate-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs font-semibold text-text-secondary">
+              <Icon name="folder" className="h-3.5 w-3.5 text-text-muted" />
               {notification.project.name}
             </span>
 
             {notification.documentName && (
-              <span className="inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-xs text-slate-600 ring-1 ring-slate-200">
-                <Icon name="file" className="h-3.5 w-3.5 text-slate-400" />
+              <span className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs text-text-secondary">
+                <Icon name="file" className="h-3.5 w-3.5 text-text-muted" />
                 {notification.documentName}
               </span>
             )}
 
             <span className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold ${
               isHandover
-                ? 'bg-violet-50 text-violet-700'
-                : 'bg-blue-50 text-blue-700'
+                ? 'bg-violet-500/10 text-violet-300'
+                : 'bg-sky-500/10 text-sky-300'
             }`}>
               {isHandover ? 'Handover' : 'Employee Request'}
             </span>
           </div>
 
           {notification.description && (
-            <div className="mt-3 rounded-xl border border-slate-200 bg-white/80 p-3">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <div className="mt-3 rounded-xl border border-border bg-surface p-3">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 Request Details
               </p>
-              <p className="mt-1 text-sm leading-5 text-slate-600">
+              <p className="mt-1 text-sm leading-5 text-text-secondary">
                 {notification.description}
               </p>
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-500">
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-text-muted">
             <span>{timeAgo(notification.timestamp)}</span>
 
             {notification.timestamp && (
@@ -279,11 +279,11 @@ function NotificationCard({ notification, onRead, onOpen }) {
             )}
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-200/70 pt-4">
+          <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-border pt-4">
             <button
               type="button"
               onClick={() => onOpen(notification)}
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-700 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-blue-800"
+              className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-violet-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50"
             >
               {notification.actionLabel}
               <Icon name="arrowLeft" className="h-3.5 w-3.5 rotate-180" />
@@ -293,7 +293,7 @@ function NotificationCard({ notification, onRead, onOpen }) {
               <button
                 type="button"
                 onClick={() => onRead(notification.id)}
-                className="rounded-lg px-3 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-blue-700"
+                className="rounded-lg px-3 py-2 text-xs font-semibold text-text-secondary transition hover:bg-surface-hover hover:text-violet-300"
               >
                 Mark as read
               </button>
@@ -444,15 +444,15 @@ export default function ManagerNotificationsPage() {
       <section>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-700">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-300">
               Manager Workspace
             </p>
 
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
               Notifications
             </h1>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-text-muted">
               Stay informed about employee requests and handovers that need your attention.
             </p>
           </div>
@@ -461,7 +461,7 @@ export default function ManagerNotificationsPage() {
             type="button"
             onClick={() => refreshNotifications(true)}
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface-raised px-4 py-2.5 text-sm font-semibold text-text-secondary shadow-sm transition hover:border-violet-400/25 hover:bg-surface-hover hover:text-violet-300 disabled:opacity-50"
           >
             <Icon name="refresh-cw" className="h-4 w-4" />
             {loading ? 'Refreshing...' : 'Refresh'}
@@ -475,7 +475,7 @@ export default function ManagerNotificationsPage() {
           value={notifications.length}
           description="Items requiring manager attention"
           icon="bell"
-          iconStyle="bg-blue-50 text-blue-700"
+          iconStyle="border border-violet-400/15 bg-violet-500/10 text-violet-300"
         />
 
         <MetricCard
@@ -483,7 +483,7 @@ export default function ManagerNotificationsPage() {
           value={unreadCount}
           description="Waiting for your attention"
           icon="alert"
-          iconStyle="bg-amber-50 text-amber-700"
+          iconStyle="border border-amber-400/15 bg-amber-500/10 text-amber-300"
         />
 
         <MetricCard
@@ -491,7 +491,7 @@ export default function ManagerNotificationsPage() {
           value={handoverCount}
           description="Employee-confirmed handovers"
           icon="clipboard"
-          iconStyle="bg-violet-50 text-violet-700"
+          iconStyle="border border-violet-400/15 bg-violet-500/10 text-violet-300"
         />
 
         <MetricCard
@@ -499,19 +499,19 @@ export default function ManagerNotificationsPage() {
           value={requestCount}
           description="New requests submitted"
           icon="folder"
-          iconStyle="bg-emerald-50 text-emerald-700"
+          iconStyle="border border-emerald-400/15 bg-emerald-500/10 text-emerald-300"
         />
       </section>
 
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-100 p-5 sm:p-6">
+      <section className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-sm shadow-black/10">
+        <div className="border-b border-border p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-lg font-bold text-text-primary">
                 Manager Activity Feed
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-text-muted">
                 Review incoming requests and employee-confirmed handovers.
               </p>
             </div>
@@ -520,7 +520,7 @@ export default function ManagerNotificationsPage() {
               type="button"
               onClick={markAllAsRead}
               disabled={unreadCount === 0}
-              className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-lg border border-border px-3 py-2 text-xs font-semibold text-text-secondary transition hover:border-violet-400/30 hover:bg-violet-500/10 hover:text-violet-300 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Mark all as read
             </button>
@@ -529,7 +529,7 @@ export default function ManagerNotificationsPage() {
           <div className="relative mt-5">
             <Icon
               name="search"
-              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-faint"
             />
 
             <input
@@ -537,7 +537,7 @@ export default function ManagerNotificationsPage() {
               value={search}
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search by employee, project, request or details..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
+              className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text-primary outline-none placeholder:text-text-faint transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
             />
           </div>
 
@@ -549,8 +549,8 @@ export default function ManagerNotificationsPage() {
                 onClick={() => setActiveFilter(filter.id)}
                 className={`inline-flex items-center gap-2 rounded-lg px-3.5 py-2.5 text-xs font-semibold transition ${
                   activeFilter === filter.id
-                    ? 'bg-blue-700 text-white shadow-sm'
-                    : 'border border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700'
+                    ? 'bg-violet-600 text-white shadow-sm shadow-violet-950/20'
+                    : 'border border-border bg-surface text-text-secondary hover:border-violet-400/30 hover:bg-surface-hover hover:text-violet-300'
                 }`}
               >
                 {filter.label}
@@ -559,7 +559,7 @@ export default function ManagerNotificationsPage() {
                   className={`rounded-full px-1.5 py-0.5 text-[10px] ${
                     activeFilter === filter.id
                       ? 'bg-white/20 text-white'
-                      : 'bg-slate-100 text-slate-500'
+                      : 'bg-surface-hover text-text-muted'
                   }`}
                 >
                   {filterCounts[filter.id]}
@@ -571,31 +571,31 @@ export default function ManagerNotificationsPage() {
 
         <div className="p-5 sm:p-6">
           {loadError && (
-            <div className="mb-5 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="mb-5 rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-300">
               {loadError}
             </div>
           )}
 
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-slate-800">
+              <p className="text-sm font-semibold text-text-primary">
                 {filteredNotifications.length}{' '}
                 {filteredNotifications.length === 1 ? 'notification' : 'notifications'}
               </p>
-              <p className="mt-0.5 text-xs text-slate-400">
+              <p className="mt-0.5 text-xs text-text-muted">
                 {activeFilter === 'all'
                   ? 'Showing all activity'
                   : `Filtered by ${filters.find((item) => item.id === activeFilter)?.label}`}
               </p>
             </div>
 
-            <span className="text-xs text-slate-400">
+            <span className="text-xs text-text-muted">
               Newest first
             </span>
           </div>
 
           {loading ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-14 text-center text-sm text-slate-500">
+            <div className="rounded-2xl border border-dashed border-border-strong bg-surface px-5 py-14 text-center text-sm text-text-muted">
               Loading notifications...
             </div>
           ) : filteredNotifications.length > 0 ? (
@@ -610,18 +610,18 @@ export default function ManagerNotificationsPage() {
               ))}
             </div>
           ) : (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-14 text-center">
-              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+            <div className="rounded-2xl border border-dashed border-border-strong bg-surface px-5 py-14 text-center">
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
                 <Icon name="bell" className="h-7 w-7" />
               </span>
 
-              <h3 className="mt-4 text-base font-bold text-slate-800">
+              <h3 className="mt-4 text-base font-bold text-text-primary">
                 {notifications.length === 0
                   ? 'You’re all caught up'
                   : 'No matching notifications'}
               </h3>
 
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-text-muted">
                 {notifications.length === 0
                   ? 'New employee requests and confirmed handovers will appear here when they need your attention.'
                   : 'Try another filter or search term to find the notification you need.'}
@@ -634,7 +634,7 @@ export default function ManagerNotificationsPage() {
                     setSearch('')
                     setActiveFilter('all')
                   }}
-                  className="mt-4 rounded-lg px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-50 hover:text-blue-900"
+                  className="mt-4 rounded-lg px-3 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/10 hover:text-violet-200"
                 >
                   Clear filters
                 </button>
@@ -644,18 +644,18 @@ export default function ManagerNotificationsPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-blue-200 bg-blue-50/70 p-5 sm:p-6">
+      <section className="rounded-2xl border border-violet-400/20 bg-violet-500/5 p-5 sm:p-6">
         <div className="flex items-start gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700 shadow-sm">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
             <Icon name="lock" className="h-5 w-5" />
           </span>
 
           <div>
-            <h2 className="text-base font-bold text-slate-900">
+            <h2 className="text-base font-bold text-text-primary">
               Workspace Notifications
             </h2>
 
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <p className="mt-1 text-sm leading-6 text-text-secondary">
               Employee requests are retrieved from the KnowFlow database
               through the authenticated backend. Handover alerts use project
               handover activity. Notification read states are stored locally.

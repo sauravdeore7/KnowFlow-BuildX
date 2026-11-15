@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from 'react'
 import { useApp } from '../hooks/useApp'
 import Icon from '../components/common/Icon'
@@ -12,11 +11,11 @@ const STATUS_LABELS = {
 }
 
 const STATUS_STYLES = {
-  completed: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-  pending: 'bg-amber-50 text-amber-700 border-amber-100',
-  blocker: 'bg-rose-50 text-rose-700 border-rose-100',
-  decision: 'bg-blue-50 text-blue-700 border-blue-100',
-  question: 'bg-violet-50 text-violet-700 border-violet-100',
+  completed: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  pending: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  blocker: 'bg-rose-500/10 text-rose-300 border-rose-500/20',
+  decision: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20',
+  question: 'bg-violet-500/10 text-violet-300 border-violet-500/20',
 }
 
 function getText(value) {
@@ -80,14 +79,14 @@ function getItemStatus(item) {
 
 function MetricCard({ label, value, icon, color, description }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10 transition hover:-translate-y-0.5 hover:border-violet-400/20 hover:shadow-md">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+          <p className="text-sm font-medium text-text-muted">{label}</p>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
             {value}
           </p>
-          <p className="mt-1 text-xs text-slate-400">{description}</p>
+          <p className="mt-1 text-xs text-text-faint">{description}</p>
         </div>
 
         <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${color}`}>
@@ -101,12 +100,12 @@ function MetricCard({ label, value, icon, color, description }) {
 function SectionHeading({ icon, title, description }) {
   return (
     <div className="flex items-start gap-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
         <Icon name={icon} className="h-5 w-5" />
       </span>
       <div>
-        <h3 className="font-bold text-slate-900">{title}</h3>
-        <p className="mt-1 text-sm text-slate-500">{description}</p>
+        <h3 className="font-bold text-text-primary">{title}</h3>
+        <p className="mt-1 text-sm text-text-muted">{description}</p>
       </div>
     </div>
   )
@@ -118,16 +117,16 @@ function DistributionRow({ label, value, total, color }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-sm font-medium text-slate-700">{label}</span>
-        <span className="text-sm font-semibold text-slate-900">
+        <span className="text-sm font-medium text-text-secondary">{label}</span>
+        <span className="text-sm font-semibold text-text-primary">
           {value}
-          <span className="ml-1 text-xs font-normal text-slate-400">
+          <span className="ml-1 text-xs font-normal text-text-faint">
             ({percentage}%)
           </span>
         </span>
       </div>
 
-      <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
+      <div className="h-2.5 overflow-hidden rounded-full bg-surface-hover">
         <div
           className={`h-full rounded-full ${color}`}
           style={{ width: `${percentage}%` }}
@@ -298,21 +297,21 @@ export default function EmployeeKnowledgeInsightsPage() {
       label: 'Knowledge Findings',
       value: totalFindings,
       icon: 'brain',
-      color: 'bg-blue-50 text-blue-600',
+      color: 'bg-violet-500/10 text-violet-300',
       description: 'Recorded project knowledge',
     },
     {
       label: 'Completed',
       value: insights?.statusCounts.completed || 0,
       icon: 'checkCircle',
-      color: 'bg-emerald-50 text-emerald-600',
+      color: 'bg-emerald-500/10 text-emerald-300',
       description: 'Completed knowledge items',
     },
     {
       label: 'Pending',
       value: insights?.statusCounts.pending || 0,
       icon: 'clock',
-      color: 'bg-amber-50 text-amber-600',
+      color: 'bg-amber-500/10 text-amber-300',
       description: 'Items awaiting progress',
     },
     {
@@ -321,7 +320,7 @@ export default function EmployeeKnowledgeInsightsPage() {
         (insights?.statusCounts.blocker || 0) +
         (insights?.statusCounts.question || 0),
       icon: 'alert',
-      color: 'bg-rose-50 text-rose-600',
+      color: 'bg-rose-500/10 text-rose-300',
       description: 'Blockers and questions',
     },
   ]
@@ -330,34 +329,34 @@ export default function EmployeeKnowledgeInsightsPage() {
     <div className="space-y-7">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
+          <div className="flex items-center gap-2 text-sm font-medium text-violet-300">
             <Icon name="brain" className="h-4 w-4" />
             Knowledge & Intelligence
           </div>
 
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             Knowledge Insights
           </h2>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
             Understand project knowledge, track your contributions and identify
             pending work across your assigned projects.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-700">
+        <div className="flex items-center gap-2 self-start rounded-xl border border-violet-400/20 bg-violet-500/10 px-4 py-2.5 text-sm font-semibold text-violet-300">
           <Icon name="eye" className="h-4 w-4" />
           Employee View
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-text-primary">
               Project Workspace
             </h3>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-text-muted">
               Select an assigned project to explore its knowledge insights.
             </p>
           </div>
@@ -365,7 +364,7 @@ export default function EmployeeKnowledgeInsightsPage() {
           <select
             value={selectedProject}
             onChange={(event) => setSelectedProject(event.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 sm:w-72"
+            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm font-medium text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:w-72"
           >
             {projects.length === 0 && (
               <option value="">No projects available</option>
@@ -381,40 +380,40 @@ export default function EmployeeKnowledgeInsightsPage() {
       </div>
 
       {!project ? (
-        <div className="rounded-2xl border border-slate-200 bg-white px-5 py-16 text-center shadow-sm">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+        <div className="rounded-2xl border border-border bg-surface-raised px-5 py-16 text-center shadow-sm shadow-black/10">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-surface text-text-muted">
             <Icon name="folder" className="h-7 w-7" />
           </span>
-          <h3 className="mt-4 font-semibold text-slate-900">
+          <h3 className="mt-4 font-semibold text-text-primary">
             {projectsStatus === 'loading'
               ? 'Loading projects'
               : 'No project available'}
           </h3>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-text-muted">
             Assigned project insights will appear here when available.
           </p>
         </div>
       ) : (
         <>
-          <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 via-white to-violet-50 p-5">
+          <div className="rounded-2xl border border-violet-400/20 bg-gradient-to-r from-violet-500/10 via-surface-raised to-indigo-500/10 p-5">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div className="flex items-center gap-3">
-                <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
                   <Icon name="folder" className="h-6 w-6" />
                 </span>
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-wider text-blue-600">
+                  <p className="text-xs font-medium uppercase tracking-wider text-violet-300">
                     Current project
                   </p>
-                  <h3 className="mt-1 text-lg font-bold text-slate-900">
+                  <h3 className="mt-1 text-lg font-bold text-text-primary">
                     {project.name}
                   </h3>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-blue-100 bg-white/80 px-4 py-2.5">
-                <p className="text-xs text-slate-500">Source coverage</p>
-                <p className="mt-0.5 text-xl font-bold text-slate-900">
+              <div className="rounded-xl border border-border bg-surface/80 px-4 py-2.5">
+                <p className="text-xs text-text-muted">Source coverage</p>
+                <p className="mt-0.5 text-xl font-bold text-text-primary">
                   {insights.sourceCoverage}%
                 </p>
               </div>
@@ -428,7 +427,7 @@ export default function EmployeeKnowledgeInsightsPage() {
           </div>
 
           <div className="grid gap-5 xl:grid-cols-2">
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10">
               <SectionHeading
                 icon="chart"
                 title="Knowledge Distribution"
@@ -440,42 +439,42 @@ export default function EmployeeKnowledgeInsightsPage() {
                   label="Completed"
                   value={insights.statusCounts.completed}
                   total={totalFindings}
-                  color="bg-emerald-500"
+                  color="bg-emerald-400"
                 />
                 <DistributionRow
                   label="Pending"
                   value={insights.statusCounts.pending}
                   total={totalFindings}
-                  color="bg-amber-500"
+                  color="bg-amber-400"
                 />
                 <DistributionRow
                   label="Blockers"
                   value={insights.statusCounts.blocker}
                   total={totalFindings}
-                  color="bg-rose-500"
+                  color="bg-rose-400"
                 />
                 <DistributionRow
                   label="Decisions"
                   value={insights.statusCounts.decision}
                   total={totalFindings}
-                  color="bg-blue-500"
+                  color="bg-indigo-400"
                 />
                 <DistributionRow
                   label="Questions"
                   value={insights.statusCounts.question}
                   total={totalFindings}
-                  color="bg-violet-500"
+                  color="bg-violet-400"
                 />
               </div>
 
               {totalFindings === 0 && (
-                <p className="mt-5 rounded-xl bg-slate-50 p-3 text-xs text-slate-500">
+                <p className="mt-5 rounded-xl border border-border-subtle bg-surface p-3 text-xs text-text-muted">
                   No knowledge findings have been recorded for this project yet.
                 </p>
               )}
             </section>
 
-            <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10">
               <SectionHeading
                 icon="users"
                 title="My Contributions"
@@ -483,44 +482,44 @@ export default function EmployeeKnowledgeInsightsPage() {
               />
 
               <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-blue-50 p-4">
-                  <p className="text-xs font-medium text-blue-600">
+                <div className="rounded-xl border border-violet-400/15 bg-violet-500/10 p-4">
+                  <p className="text-xs font-medium text-violet-300">
                     My Journals
                   </p>
-                  <p className="mt-2 text-2xl font-bold text-slate-900">
+                  <p className="mt-2 text-2xl font-bold text-text-primary">
                     {insights.ownJournals.length}
                   </p>
                 </div>
 
-                <div className="rounded-xl bg-violet-50 p-4">
-                  <p className="text-xs font-medium text-violet-600">
+                <div className="rounded-xl border border-indigo-400/15 bg-indigo-500/10 p-4">
+                  <p className="text-xs font-medium text-indigo-300">
                     My Knowledge Items
                   </p>
-                  <p className="mt-2 text-2xl font-bold text-slate-900">
+                  <p className="mt-2 text-2xl font-bold text-text-primary">
                     {insights.ownKnowledge.length}
                   </p>
                 </div>
 
-                <div className="rounded-xl bg-rose-50 p-4">
-                  <p className="text-xs font-medium text-rose-600">
+                <div className="rounded-xl border border-rose-400/15 bg-rose-500/10 p-4">
+                  <p className="text-xs font-medium text-rose-300">
                     My Journal Blockers
                   </p>
-                  <p className="mt-2 text-2xl font-bold text-slate-900">
+                  <p className="mt-2 text-2xl font-bold text-text-primary">
                     {insights.ownJournalBlockers.length}
                   </p>
                 </div>
 
-                <div className="rounded-xl bg-amber-50 p-4">
-                  <p className="text-xs font-medium text-amber-600">
+                <div className="rounded-xl border border-amber-400/15 bg-amber-500/10 p-4">
+                  <p className="text-xs font-medium text-amber-300">
                     My Pending Tasks
                   </p>
-                  <p className="mt-2 text-2xl font-bold text-slate-900">
+                  <p className="mt-2 text-2xl font-bold text-text-primary">
                     {insights.ownJournalPending.length}
                   </p>
                 </div>
               </div>
 
-              <p className="mt-4 text-xs leading-5 text-slate-400">
+              <p className="mt-4 text-xs leading-5 text-text-faint">
                 Contributions are counted only when a journal or knowledge
                 record contains an author email or user ID matching your
                 account. Unattributed records are not counted as yours.
@@ -528,7 +527,7 @@ export default function EmployeeKnowledgeInsightsPage() {
             </section>
           </div>
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10">
             <SectionHeading
               icon="fileText"
               title="Project Knowledge Coverage"
@@ -536,59 +535,59 @@ export default function EmployeeKnowledgeInsightsPage() {
             />
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-medium text-slate-500">
+              <div className="rounded-xl border border-border bg-surface p-4">
+                <p className="text-xs font-medium text-text-muted">
                   Journal Entries
                 </p>
-                <p className="mt-2 text-2xl font-bold text-slate-900">
+                <p className="mt-2 text-2xl font-bold text-text-primary">
                   {insights.journals.length}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-medium text-slate-500">
+              <div className="rounded-xl border border-border bg-surface p-4">
+                <p className="text-xs font-medium text-text-muted">
                   Project Documents
                 </p>
-                <p className="mt-2 text-2xl font-bold text-slate-900">
+                <p className="mt-2 text-2xl font-bold text-text-primary">
                   {insights.documents.length}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <p className="text-xs font-medium text-slate-500">
+              <div className="rounded-xl border border-rose-500/15 bg-rose-500/5 p-4">
+                <p className="text-xs font-medium text-text-muted">
                   Missing Sources
                 </p>
-                <p className="mt-2 text-2xl font-bold text-rose-600">
+                <p className="mt-2 text-2xl font-bold text-rose-300">
                   {insights.missingSources.length}
                 </p>
               </div>
             </div>
 
-            <div className="mt-5 rounded-xl bg-slate-50 p-4">
+            <div className="mt-5 rounded-xl border border-border-subtle bg-surface p-4">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-slate-700">
+                <span className="text-sm font-semibold text-text-secondary">
                   Knowledge source coverage
                 </span>
-                <span className="text-sm font-bold text-slate-900">
+                <span className="text-sm font-bold text-text-primary">
                   {insights.sourceCoverage}%
                 </span>
               </div>
 
-              <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-slate-200">
+              <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-surface-hover">
                 <div
-                  className="h-full rounded-full bg-blue-500 transition-all"
+                  className="h-full rounded-full bg-violet-400 transition-all"
                   style={{ width: `${insights.sourceCoverage}%` }}
                 />
               </div>
 
-              <p className="mt-2 text-xs leading-5 text-slate-500">
+              <p className="mt-2 text-xs leading-5 text-text-muted">
                 Based on whether recorded knowledge findings have an available
                 source reference in the current project data.
               </p>
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10">
             <SectionHeading
               icon="activity"
               title="Knowledge Health Observations"
@@ -598,27 +597,27 @@ export default function EmployeeKnowledgeInsightsPage() {
             <div className="mt-5 space-y-3">
               {insights.observations.map((item, index) => {
                 const styles = {
-                  blocker: 'border-rose-100 bg-rose-50 text-rose-600',
-                  pending: 'border-amber-100 bg-amber-50 text-amber-600',
-                  question: 'border-violet-100 bg-violet-50 text-violet-600',
-                  source: 'border-blue-100 bg-blue-50 text-blue-600',
-                  positive: 'border-emerald-100 bg-emerald-50 text-emerald-600',
+                  blocker: 'border-rose-500/20 bg-rose-500/10 text-rose-300',
+                  pending: 'border-amber-500/20 bg-amber-500/10 text-amber-300',
+                  question: 'border-violet-500/20 bg-violet-500/10 text-violet-300',
+                  source: 'border-indigo-500/20 bg-indigo-500/10 text-indigo-300',
+                  positive: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300',
                 }
 
                 return (
                   <div
                     key={`${item.type}-${index}`}
-                    className="flex items-start gap-3 rounded-xl border border-slate-200 p-4"
+                    className="flex items-start gap-3 rounded-xl border border-border bg-surface p-4"
                   >
-                    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${styles[item.type] || 'border-slate-100 bg-slate-50 text-slate-600'}`}>
+                    <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${styles[item.type] || 'border-border bg-surface-hover text-text-secondary'}`}>
                       <Icon name={item.icon} className="h-5 w-5" />
                     </span>
 
                     <div>
-                      <h4 className="text-sm font-semibold text-slate-800">
+                      <h4 className="text-sm font-semibold text-text-primary">
                         {item.title}
                       </h4>
-                      <p className="mt-1 text-sm leading-6 text-slate-500">
+                      <p className="mt-1 text-sm leading-6 text-text-muted">
                         {item.description}
                       </p>
                     </div>
@@ -628,7 +627,7 @@ export default function EmployeeKnowledgeInsightsPage() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10">
             <SectionHeading
               icon="listChecks"
               title="Recorded Knowledge Findings"
@@ -636,15 +635,15 @@ export default function EmployeeKnowledgeInsightsPage() {
             />
 
             {insights.knowledge.length === 0 ? (
-              <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-10 text-center">
+              <div className="mt-5 rounded-xl border border-dashed border-border bg-surface px-4 py-10 text-center">
                 <Icon
                   name="brain"
-                  className="mx-auto h-8 w-8 text-slate-300"
+                  className="mx-auto h-8 w-8 text-text-faint"
                 />
-                <p className="mt-3 text-sm font-semibold text-slate-700">
+                <p className="mt-3 text-sm font-semibold text-text-secondary">
                   No knowledge findings yet
                 </p>
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-text-muted">
                   Recorded findings will appear here when available.
                 </p>
               </div>
@@ -660,13 +659,13 @@ export default function EmployeeKnowledgeInsightsPage() {
                   return (
                     <div
                       key={item.id || index}
-                      className="flex flex-col justify-between gap-3 rounded-xl border border-slate-200 p-4 sm:flex-row sm:items-center"
+                      className="flex flex-col justify-between gap-3 rounded-xl border border-border bg-surface p-4 sm:flex-row sm:items-center"
                     >
                       <div className="min-w-0">
-                        <h4 className="break-words text-sm font-semibold text-slate-800">
+                        <h4 className="break-words text-sm font-semibold text-text-primary">
                           {title}
                         </h4>
-                        <p className="mt-1 text-xs text-slate-500">
+                        <p className="mt-1 text-xs text-text-muted">
                           {getText(item.category) ||
                             getText(item.type) ||
                             'Project knowledge'}
@@ -683,16 +682,16 @@ export default function EmployeeKnowledgeInsightsPage() {
             )}
           </section>
 
-          <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5">
+          <div className="rounded-2xl border border-violet-400/20 bg-violet-500/5 p-5">
             <div className="flex items-start gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
                 <Icon name="info" className="h-5 w-5" />
               </span>
               <div>
-                <h3 className="text-sm font-semibold text-slate-900">
+                <h3 className="text-sm font-semibold text-text-primary">
                   About These Insights
                 </h3>
-                <p className="mt-1 text-sm leading-6 text-slate-600">
+                <p className="mt-1 text-sm leading-6 text-text-secondary">
                   These insights are calculated from the project records
                   currently available in KnowFlow. They are a read-only
                   overview, not live AI-generated analysis. Employee

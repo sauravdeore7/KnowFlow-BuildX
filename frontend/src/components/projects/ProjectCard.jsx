@@ -53,10 +53,10 @@ export default function ProjectCard({
   // Employee-specific project card.
   if (!isManager) {
     return (
-      <div className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-brand-400 hover:shadow-lg">
+      <div className="group flex h-full flex-col rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10 transition duration-200 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-lg hover:shadow-black/20">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
-            <h3 className="text-lg font-bold text-slate-900 transition group-hover:text-brand-700">
+            <h3 className="text-lg font-bold text-text-primary transition group-hover:text-violet-300">
               {project.name}
             </h3>
           </div>
@@ -64,12 +64,12 @@ export default function ProjectCard({
           <StatusBadge type="project" value={project.status} />
         </div>
 
-        <p className="mt-2 min-h-10 line-clamp-2 text-sm leading-5 text-slate-500">
+        <p className="mt-2 min-h-10 line-clamp-2 text-sm leading-5 text-text-muted">
           {project.description}
         </p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-brand-100 bg-brand-50/60 p-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-brand-600 shadow-sm">
+        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-violet-400/15 bg-violet-500/[0.07] p-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300 shadow-sm">
             <span className="text-sm font-bold">
               {(currentMember?.name ?? 'U')
                 .split(' ')
@@ -80,96 +80,96 @@ export default function ProjectCard({
           </div>
 
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-slate-500">
+            <p className="text-xs font-medium text-text-muted">
               Your assigned role
             </p>
-            <p className="truncate text-sm font-bold text-slate-900">
+            <p className="truncate text-sm font-bold text-text-primary">
               {currentMember?.role ?? 'Team Member'}
             </p>
           </div>
 
-          <span className="rounded-lg bg-white px-2.5 py-1 text-xs font-semibold text-brand-700 shadow-sm">
+          <span className="rounded-lg border border-violet-400/15 bg-violet-500/10 px-2.5 py-1 text-xs font-semibold text-violet-300 shadow-sm">
             Assigned
           </span>
         </div>
 
         <div className="mt-4 grid grid-cols-3 gap-2">
-          <div className="rounded-xl bg-slate-50 px-2 py-3 text-center">
-            <p className="text-xl font-bold text-slate-900">
+          <div className="rounded-xl border border-border bg-surface px-2 py-3 text-center">
+            <p className="text-xl font-bold text-text-primary">
               {members.length}
             </p>
-            <p className="mt-1 text-xs font-medium text-slate-500">
+            <p className="mt-1 text-xs font-medium text-text-muted">
               Team Members
             </p>
           </div>
 
-          <div className="rounded-xl bg-emerald-50/70 px-2 py-3 text-center">
-            <p className="text-xl font-bold text-emerald-700">
+          <div className="rounded-xl border border-emerald-400/10 bg-emerald-500/[0.07] px-2 py-3 text-center">
+            <p className="text-xl font-bold text-emerald-300">
               {myJournalEntries.length}
             </p>
-            <p className="mt-1 text-xs font-medium text-emerald-700">
+            <p className="mt-1 text-xs font-medium text-emerald-300">
               My Entries
             </p>
           </div>
 
-          <div className="rounded-xl bg-amber-50/70 px-2 py-3 text-center">
-            <p className="text-xl font-bold text-amber-700">
+          <div className="rounded-xl border border-amber-400/10 bg-amber-500/[0.07] px-2 py-3 text-center">
+            <p className="text-xl font-bold text-amber-300">
               {myPendingTasks}
             </p>
-            <p className="mt-1 text-xs font-medium text-amber-700">
+            <p className="mt-1 text-xs font-medium text-amber-300">
               Pending Tasks
             </p>
           </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
           <div className="flex min-w-0 items-center">
             {shown.map((member) => (
               <Avatar
                 key={member.id}
                 name={member.name}
                 size="sm"
-                className="-ml-2 ring-2 ring-white first:ml-0"
+                className="-ml-2 ring-2 ring-surface-raised first:ml-0"
               />
             ))}
 
             {extra > 0 && (
-              <span className="-ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 ring-2 ring-white">
+              <span className="-ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-xs font-semibold text-text-secondary ring-2 ring-surface-raised">
                 +{extra}
               </span>
             )}
 
-            <span className="ml-3 truncate text-xs font-medium text-slate-500">
+            <span className="ml-3 truncate text-xs font-medium text-text-muted">
               {members.length} members
             </span>
           </div>
 
-          <span className="shrink-0 text-xs text-slate-400">
+          <span className="shrink-0 text-xs text-text-faint">
             Updated {timeAgo(project.updatedAt)}
           </span>
         </div>
 
-        <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3">
+        <div className="mt-4 rounded-xl border border-border bg-surface p-3">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-text-muted">
               Project Manager
             </span>
-            <span className="text-xs font-semibold text-slate-800">
+            <span className="text-xs font-semibold text-text-primary">
               {manager?.name ?? 'Not assigned'}
             </span>
           </div>
 
           <div className="mt-3 flex items-center justify-between gap-2">
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-text-muted">
               Shared Documents
             </span>
-            <span className="text-xs font-bold text-slate-800">
+            <span className="text-xs font-bold text-text-primary">
               {documents.length}
             </span>
           </div>
         </div>
 
-        <div className="mt-auto border-t border-slate-100 pt-4">
+        <div className="mt-auto border-t border-border pt-4">
           <Button
             onClick={() => onOpen(project.id)}
             className="w-full"
@@ -183,10 +183,10 @@ export default function ProjectCard({
 
   // Existing Manager project card — preserved.
   return (
-    <div className="group flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-brand-400 hover:shadow-lg">
+    <div className="group flex h-full flex-col rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10 transition duration-200 hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-lg hover:shadow-black/20">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <h3 className="text-lg font-bold text-slate-900 transition group-hover:text-brand-700">
+          <h3 className="text-lg font-bold text-text-primary transition group-hover:text-violet-300">
             {project.name}
           </h3>
         </div>
@@ -194,74 +194,74 @@ export default function ProjectCard({
         <StatusBadge type="project" value={project.status} />
       </div>
 
-      <p className="mt-2 min-h-10 line-clamp-2 text-sm leading-5 text-slate-500">
+      <p className="mt-2 min-h-10 line-clamp-2 text-sm leading-5 text-text-muted">
         {project.description}
       </p>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+        <span className="text-xs font-semibold uppercase tracking-wide text-text-faint">
           Handover status
         </span>
         <StatusBadge type="handover" value={project.handoverStatus} />
       </div>
 
       <div className="mt-5 grid grid-cols-3 gap-2">
-        <div className="rounded-xl bg-slate-50 px-2 py-3 text-center">
-          <p className="text-xl font-bold text-slate-900">
+        <div className="rounded-xl border border-border bg-surface px-2 py-3 text-center">
+          <p className="text-xl font-bold text-text-primary">
             {documents.length}
           </p>
-          <p className="mt-1 text-xs font-medium text-slate-500">
+          <p className="mt-1 text-xs font-medium text-text-muted">
             Documents
           </p>
         </div>
 
-        <div className="rounded-xl bg-emerald-50/70 px-2 py-3 text-center">
-          <p className="text-xl font-bold text-emerald-700">
+        <div className="rounded-xl border border-emerald-400/10 bg-emerald-500/[0.07] px-2 py-3 text-center">
+          <p className="text-xl font-bold text-emerald-300">
             {completedCount}
           </p>
-          <p className="mt-1 text-xs font-medium text-emerald-700">
+          <p className="mt-1 text-xs font-medium text-emerald-300">
             Completed
           </p>
         </div>
 
-        <div className="rounded-xl bg-amber-50/70 px-2 py-3 text-center">
-          <p className="text-xl font-bold text-amber-700">
+        <div className="rounded-xl border border-amber-400/10 bg-amber-500/[0.07] px-2 py-3 text-center">
+          <p className="text-xl font-bold text-amber-300">
             {unresolvedCount}
           </p>
-          <p className="mt-1 text-xs font-medium text-amber-700">
+          <p className="mt-1 text-xs font-medium text-amber-300">
             Unresolved
           </p>
         </div>
       </div>
 
-      <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+      <div className="mt-5 flex items-center justify-between gap-3 border-t border-border pt-4">
         <div className="flex min-w-0 items-center">
           {shown.map((member) => (
             <Avatar
               key={member.id}
               name={member.name}
               size="sm"
-              className="-ml-2 ring-2 ring-white first:ml-0"
+              className="-ml-2 ring-2 ring-surface-raised first:ml-0"
             />
           ))}
 
           {extra > 0 && (
-            <span className="-ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-600 ring-2 ring-white">
+            <span className="-ml-2 inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-surface text-xs font-semibold text-text-secondary ring-2 ring-surface-raised">
               +{extra}
             </span>
           )}
 
-          <span className="ml-3 truncate text-xs font-medium text-slate-500">
+          <span className="ml-3 truncate text-xs font-medium text-text-muted">
             {members.length} members
           </span>
         </div>
 
-        <span className="shrink-0 text-xs text-slate-400">
+        <span className="shrink-0 text-xs text-text-faint">
           Updated {timeAgo(project.updatedAt)}
         </span>
       </div>
 
-      <div className="mt-auto border-t border-slate-100 pt-4">
+      <div className="mt-auto border-t border-border pt-4">
         <div className="flex flex-wrap gap-2">
           <Button
             onClick={() => onOpen(project.id)}

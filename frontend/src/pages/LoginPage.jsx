@@ -103,45 +103,45 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="grid min-h-screen bg-canvas lg:grid-cols-2">
       {/* Left branding panel */}
-      <div className="hidden flex-col justify-between bg-slate-950 p-8 lg:sticky lg:top-0 lg:flex lg:h-screen lg:min-h-0 lg:p-10 xl:p-12">
+      <div className="hidden flex-col justify-between overflow-hidden bg-canvas-deep p-8 lg:sticky lg:top-0 lg:flex lg:h-screen lg:min-h-0 lg:p-10 xl:p-12">
         <div className="my-auto">
           <Logo className="text-5xl xl:text-6xl" />
 
-          <h2 className="mt-5 max-w-xl text-3xl font-bold leading-tight text-white xl:text-4xl">
+          <h2 className="mt-5 max-w-xl text-3xl font-bold leading-tight tracking-tight text-text-primary xl:text-4xl">
             Never lose the knowledge behind the work.
           </h2>
 
-          <p className="mt-5 max-w-lg text-base leading-8 text-slate-300 xl:text-lg">
+          <p className="mt-5 max-w-lg text-base leading-8 text-text-secondary xl:text-lg">
             KnowFlow turns scattered, authorised project information into
             structured, evidence-linked handovers that managers review
             and approve.
           </p>
         </div>
 
-        <p className="text-sm text-slate-500">
-          CodersInPune Hackathon - Team AEGIS
+        <p className="text-sm text-text-muted">
+           Team AEGIS
         </p>
       </div>
 
       {/* Right login panel */}
-      <div className="flex items-center justify-center px-4 py-10 sm:px-8">
+      <div className="flex items-center justify-center bg-canvas px-4 py-10 sm:px-8">
         <div className="w-full max-w-md">
           <div className="mb-8 lg:hidden">
             <Logo tone="light" />
           </div>
 
-          <h1 className="text-3xl font-bold text-slate-900">
+          <h1 className="text-3xl font-bold tracking-tight text-text-primary">
             Sign in
           </h1>
 
-          <p className="mt-2 text-slate-500">
+          <p className="mt-2 text-text-secondary">
             Choose how you are accessing KnowFlow.
           </p>
 
           <div
-            className="mt-6 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1"
+            className="mt-6 grid grid-cols-2 gap-2 rounded-xl border border-border bg-surface p-1"
             role="tablist"
           >
             {ROLES.map((item) => (
@@ -156,8 +156,8 @@ export default function LoginPage() {
                 }}
                 className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
                   role === item.value
-                    ? 'bg-white text-slate-900 shadow-sm'
-                    : 'text-slate-500'
+                    ? 'border border-violet-400/20 bg-violet-500/15 text-violet-300 shadow-sm'
+                    : 'text-text-muted hover:bg-surface-hover hover:text-text-primary'
                 }`}
               >
                 {item.label}
@@ -165,7 +165,7 @@ export default function LoginPage() {
             ))}
           </div>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-text-muted">
             {ROLES.find((item) => item.value === role).hint}
           </p>
 
@@ -205,7 +205,7 @@ export default function LoginPage() {
                   aria-label={
                     showPassword ? 'Hide password' : 'Show password'
                   }
-                  className="rounded-lg p-2 text-slate-400 hover:text-slate-600"
+                  className="rounded-lg p-2 text-text-muted transition hover:text-text-primary"
                 >
                   <Icon
                     name={showPassword ? 'eyeOff' : 'eye'}
@@ -226,18 +226,18 @@ export default function LoginPage() {
           </form>
 
           {/* Demo access for judges */}
-          <div className="mt-8 rounded-xl border border-indigo-200 bg-indigo-50/60 p-4">
+          <div className="mt-8 rounded-2xl border border-violet-400/20 bg-surface-raised p-4 shadow-lg shadow-violet-950/10">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-slate-900">
+              <h3 className="text-sm font-bold text-text-primary">
                 Demo Access
               </h3>
 
-              <span className="rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+              <span className="rounded-full border border-violet-400/20 bg-violet-500/15 px-2.5 py-1 text-xs font-semibold text-violet-300">
                 For Judges
               </span>
             </div>
 
-            <p className="mt-1 text-xs leading-5 text-slate-600">
+            <p className="mt-1 text-xs leading-5 text-text-muted">
               Explore KnowFlow using the demo accounts below.
               Select an account to automatically fill the login form.
             </p>
@@ -246,15 +246,15 @@ export default function LoginPage() {
               {DEMO_ACCOUNTS.map((account) => (
                 <div
                   key={account.email}
-                  className="rounded-lg border border-slate-200 bg-white p-3"
+                  className="rounded-xl border border-border bg-surface p-3 transition hover:border-violet-500/30"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="text-sm font-semibold text-slate-800">
+                      <p className="text-sm font-semibold text-text-primary">
                         {account.label}
                       </p>
 
-                      <p className="mt-0.5 break-all text-xs text-slate-500">
+                      <p className="mt-0.5 break-all text-xs text-text-muted">
                         {account.email}
                       </p>
                     </div>
@@ -262,20 +262,20 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => selectDemoAccount(account)}
-                      className="shrink-0 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                      className="shrink-0 rounded-lg bg-violet-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
                     >
                       Use Account
                     </button>
                   </div>
 
-                  <p className="mt-2 break-all text-xs text-slate-500">
+                  <p className="mt-2 break-all text-xs text-text-muted">
                     Password: {account.password}
                   </p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-3 text-xs leading-5 text-slate-500">
+            <p className="mt-3 text-xs leading-5 text-text-muted">
               Demo accounts are provided for evaluation purposes.
               Please do not enter personal or sensitive information.
             </p>

@@ -34,12 +34,12 @@ function getVersion(doc) {
 
 function MetricCard({ label, value, icon, color, description }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-sm shadow-black/10 transition hover:border-violet-400/25 hover:bg-surface-hover">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
-          <p className="mt-1 text-xs text-slate-500">{description}</p>
+          <p className="text-sm font-medium text-text-secondary">{label}</p>
+          <p className="mt-2 text-2xl font-bold text-text-primary">{value}</p>
+          <p className="mt-1 text-xs text-text-muted">{description}</p>
         </div>
 
         <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${color}`}>
@@ -54,23 +54,23 @@ function DocumentRow({ document, onDownload, downloading }) {
   const version = getVersion(document.doc)
 
   return (
-    <div className="flex flex-col gap-4 border-b border-slate-100 px-5 py-5 last:border-0 sm:flex-row sm:items-center">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+    <div className="flex flex-col gap-4 border-b border-border px-5 py-5 last:border-0 sm:flex-row sm:items-center">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
         <Icon name="fileText" className="h-6 w-6" />
       </div>
 
       <div className="min-w-0 flex-1">
-        <h3 className="truncate text-sm font-semibold text-slate-900">
+        <h3 className="truncate text-sm font-semibold text-text-primary">
           {document.doc.name || 'Untitled document'}
         </h3>
 
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
           <span>{document.doc.type || 'File'}</span>
           <span>{formatFileSize(document.doc.sizeKb)}</span>
           <span>Uploaded by {document.doc.uploadedBy || 'Unknown'}</span>
         </div>
 
-        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+        <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-text-faint">
           <span>{document.project.name}</span>
           <span>·</span>
           <span>{formatDate(document.doc.uploadedAt)}</span>
@@ -79,11 +79,11 @@ function DocumentRow({ document, onDownload, downloading }) {
 
       <div className="flex shrink-0 flex-wrap items-center gap-2 self-start sm:self-center">
         {version ? (
-          <span className="rounded-lg bg-violet-50 px-3 py-1.5 text-xs font-semibold text-violet-700">
+          <span className="rounded-lg border border-violet-400/20 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-300">
             Version {version}
           </span>
         ) : (
-          <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-500">
+          <span className="rounded-lg border border-border bg-surface-hover px-3 py-1.5 text-xs font-medium text-text-muted">
             Version not tracked
           </span>
         )}
@@ -92,7 +92,7 @@ function DocumentRow({ document, onDownload, downloading }) {
           type="button"
           onClick={() => onDownload(document.doc)}
           disabled={downloading}
-          className="inline-flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-lg border border-violet-400/30 bg-violet-500/10 px-3 py-2 text-xs font-semibold text-violet-300 transition hover:bg-violet-500/20 disabled:cursor-not-allowed disabled:opacity-60"
         >
           <Icon
             name={downloading ? 'loader' : 'download'}
@@ -207,21 +207,21 @@ export default function MyDocumentsPage() {
     <div className="space-y-7">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
+          <div className="flex items-center gap-2 text-sm font-medium text-violet-300">
             <Icon name="folder" className="h-4 w-4" />
             Work & Collaboration
           </div>
 
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             My Documents
           </h2>
 
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-text-muted">
             Access documents shared across your assigned projects.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700">
+        <div className="flex items-center gap-2 self-start rounded-xl border border-violet-400/20 bg-violet-500/[0.08] px-4 py-2.5 text-sm font-medium text-violet-300">
           <Icon name="lock" className="h-4 w-4" />
           Assigned projects only
         </div>
@@ -232,7 +232,7 @@ export default function MyDocumentsPage() {
           label="All Documents"
           value={documents.length}
           icon="fileText"
-          color="bg-blue-50 text-blue-600"
+          color="border border-violet-400/15 bg-violet-500/10 text-violet-300"
           description="Available in your projects"
         />
 
@@ -240,7 +240,7 @@ export default function MyDocumentsPage() {
           label="Recently Added"
           value={recentDocuments.length}
           icon="clock"
-          color="bg-emerald-50 text-emerald-600"
+          color="border border-emerald-400/15 bg-emerald-500/10 text-emerald-300"
           description="Uploaded in the last 7 days"
         />
 
@@ -248,19 +248,19 @@ export default function MyDocumentsPage() {
           label="Projects with Documents"
           value={projectsWithDocuments}
           icon="folder"
-          color="bg-violet-50 text-violet-600"
+          color="border border-indigo-400/15 bg-indigo-500/10 text-indigo-300"
           description="Assigned projects containing files"
         />
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 p-5">
+      <div className="rounded-2xl border border-border bg-surface-raised shadow-sm shadow-black/10">
+        <div className="border-b border-border p-5">
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
             <div>
-              <h3 className="text-lg font-semibold text-slate-900">
+              <h3 className="text-lg font-semibold text-text-primary">
                 Document Library
               </h3>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-text-muted">
                 Browse and find your project documents.
               </p>
             </div>
@@ -269,21 +269,21 @@ export default function MyDocumentsPage() {
               <div className="relative min-w-0 sm:w-64">
                 <Icon
                   name="search"
-                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
                 />
                 <input
                   type="text"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search documents..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-9 pr-3 text-sm outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-border bg-surface py-2.5 pl-9 pr-3 text-sm text-text-primary outline-none transition placeholder:text-text-faint focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
                 />
               </div>
 
               <select
                 value={selectedProject}
                 onChange={(event) => setSelectedProject(event.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                className="rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
               >
                 <option value="all">All Projects</option>
                 {projects.map((project) => (
@@ -301,8 +301,8 @@ export default function MyDocumentsPage() {
               onClick={() => setActiveFilter('all')}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                 activeFilter === 'all'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'border border-violet-400/30 bg-violet-600 text-white shadow-sm shadow-violet-950/30'
+                  : 'border border-border bg-surface text-text-secondary hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-violet-300'
               }`}
             >
               All Documents
@@ -313,8 +313,8 @@ export default function MyDocumentsPage() {
               onClick={() => setActiveFilter('recent')}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
                 activeFilter === 'recent'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'border border-violet-400/30 bg-violet-600 text-white shadow-sm shadow-violet-950/30'
+                  : 'border border-border bg-surface text-text-secondary hover:border-violet-400/30 hover:bg-violet-500/[0.07] hover:text-violet-300'
               }`}
             >
               Recently Added
@@ -322,26 +322,26 @@ export default function MyDocumentsPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between gap-3 bg-slate-50 px-5 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="flex items-center justify-between gap-3 border-b border-border bg-surface px-5 py-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">
             Available Documents
           </p>
-          <span className="text-xs font-medium text-slate-500">
+          <span className="text-xs font-medium text-text-muted">
             {filteredDocuments.length} results
           </span>
         </div>
 
         {filteredDocuments.length === 0 ? (
           <div className="px-5 py-16 text-center">
-            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
               <Icon name="fileText" className="h-7 w-7" />
             </span>
 
-            <h3 className="mt-4 font-semibold text-slate-900">
+            <h3 className="mt-4 font-semibold text-text-primary">
               No documents found
             </h3>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-text-muted">
               Try changing your search or project filter.
             </p>
 
@@ -352,7 +352,7 @@ export default function MyDocumentsPage() {
                 setSelectedProject('all')
                 setActiveFilter('all')
               }}
-              className="mt-4 text-sm font-semibold text-blue-600 hover:text-blue-700"
+              className="mt-4 text-sm font-semibold text-violet-300 transition hover:text-violet-200"
             >
               Clear filters
             </button>
@@ -371,17 +371,17 @@ export default function MyDocumentsPage() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-5">
+      <div className="rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/[0.10] via-surface-raised to-indigo-500/[0.08] p-5">
         <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-500/10 text-violet-300">
             <Icon name="lock" className="h-5 w-5" />
           </span>
 
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-text-primary">
               Project document access
             </h3>
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <p className="mt-1 text-sm leading-6 text-text-secondary">
               This library displays documents from projects assigned to you.
               Document access remains subject to your project permissions.
             </p>

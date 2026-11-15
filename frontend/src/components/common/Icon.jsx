@@ -15,6 +15,24 @@ const PATHS = {
       <path d="M12 10v6M9 13h6" />
     </>
   ),
+  folderCheck: (
+    <>
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+      <path d="m9 13 2 2 4-4" />
+    </>
+  ),
+  folderOpen: (
+    <>
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v2H5a2 2 0 0 0-2 2V7z" />
+      <path d="M3 13a2 2 0 0 1 2-2h16l-2 7a2 2 0 0 1-2 1.5H5a2 2 0 0 1-2-2V13z" />
+    </>
+  ),
+  layers: (
+    <>
+      <path d="m12 3 9 5-9 5-9-5 9-5z" />
+      <path d="m3 12 9 5 9-5M3 16l9 5 9-5" />
+    </>
+  ),
   upload: <path d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />,
   sparkles: (
     <>
@@ -29,6 +47,12 @@ const PATHS = {
     <>
       <rect x="5" y="4" width="14" height="17" rx="2" />
       <path d="M9 4V3h6v1M8 12l2.5 2.5L16 9" />
+    </>
+  ),
+  clipboardList: (
+    <>
+      <rect x="5" y="4" width="14" height="17" rx="2" />
+      <path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3" />
     </>
   ),
   search: (
@@ -79,6 +103,10 @@ const PATHS = {
   alert: (
     <path d="M12 9v4m0 4h.01M10.3 3.9L2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
   ),
+  alertTriangle: (
+    <path d="M12 3 2.8 19a1.5 1.5 0 0 0 1.3 2.2h15.8a1.5 1.5 0 0 0 1.3-2.2L12 3zM12 9v4m0 4h.01" />
+  ),
+  activity: <path d="M3 12h4l3-8 4 16 3-8h4" />,
   bell: (
     <>
       <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
@@ -104,8 +132,6 @@ const PATHS = {
       <path d="M21 5.5A2.5 2.5 0 0 0 18.5 3H12v18h6.5a2.5 2.5 0 0 1 2.5 2V5.5z" />
     </>
   ),
-
-  // Knowledge Items icon
   brain: (
     <>
       <path d="M12 5.2C10.7 3.5 8.1 3.3 6.5 4.7a3.7 3.7 0 0 0-.7 4.6 3.6 3.6 0 0 0-.5 6.1 3.6 3.6 0 0 0 2.1 4.1c1.5.8 3.4.3 4.6-.9" />
@@ -115,7 +141,6 @@ const PATHS = {
       <path d="M16 8.5c-1.3 0-2.2.9-2.2 2.2M16.5 14c-1.5 0-2.5.9-2.5 2.3" />
     </>
   ),
-
   notebookPen: (
     <>
       <path d="M5 4h11a2 2 0 0 1 2 2v15H7a2 2 0 0 1-2-2V4z" />
@@ -144,11 +169,64 @@ const PATHS = {
       <path d="M7 6h3M14 6h3M6.5 7.5l4 8.5M17.5 7.5l-4 8.5" />
     </>
   ),
+
+  // Additional icons
+  helpCircle: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.6 9a2.5 2.5 0 1 1 4.3 1.8c-1 .9-1.9 1.2-1.9 2.7" />
+      <path d="M12 17h.01" />
+    </>
+  ),
+  chart: (
+    <>
+      <path d="M3 3v18h18" />
+      <path d="M8 17v-4M13 17V7M18 17V4" />
+    </>
+  ),
+  info: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 11v5M12 8h.01" />
+    </>
+  ),
+  shieldCheck: (
+    <>
+      <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
+  mousePointerClick: (
+    <>
+      <path d="m5 3 14 11-7 1-3 7L5 3z" />
+      <path d="m14 14 5 5M19 3v4M21 9h-4" />
+    </>
+  ),
+
+  // AI Knowledge Podcast
+  headphones: (
+    <>
+      <path d="M3 14v-3a9 9 0 0 1 18 0v3" />
+      <path d="M3 14h3v6H5a2 2 0 0 1-2-2v-4z" />
+      <path d="M21 14h-3v6h1a2 2 0 0 0 2-2v-4z" />
+    </>
+  ),
+
+  // Knowledge Portfolio
+  award: (
+    <>
+      <circle cx="12" cy="8" r="6" />
+      <path d="m8.2 13-1.2 9 5-3 5 3-1.2-9" />
+      <path d="m9.5 8 1.7 1.7L14.5 6" />
+    </>
+  ),
+
+  chevronRight: <path d="m9 18 6-6-6-6" />,
 }
 
 export default function Icon({ name, className = 'h-5 w-5' }) {
   const normalizedName = name?.replace(/-([a-z])/g, (_, letter) =>
-    letter.toUpperCase()
+    letter.toUpperCase(),
   )
 
   return (

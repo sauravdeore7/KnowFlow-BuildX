@@ -55,8 +55,7 @@ export default function ProjectDetailsPage() {
       <button
         type="button"
         onClick={() => navigate('projects')}
-        className="flex items-center gap-2 text-sm font-medium text-slate-500
-          hover:text-slate-900"
+        className="flex items-center gap-2 text-sm font-medium text-text-muted transition hover:text-text-primary"
       >
         <Icon name="arrowLeft" className="h-4 w-4" />
         Back to projects
@@ -66,12 +65,12 @@ export default function ProjectDetailsPage() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-3">
-              <h2 className="text-2xl font-bold text-slate-900">
+              <h2 className="text-2xl font-bold text-text-primary">
                 {project.name}
               </h2>
               <StatusBadge type="project" value={project.status} />
             </div>
-            <p className="mt-2 max-w-3xl text-slate-500">
+            <p className="mt-2 max-w-3xl text-text-secondary">
               {project.description}
             </p>
           </div>
@@ -95,7 +94,7 @@ export default function ProjectDetailsPage() {
         </div>
 
         <dl
-          className="mt-6 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2
+          className="mt-6 grid gap-4 border-t border-border pt-5 sm:grid-cols-2
             lg:grid-cols-4"
         >
           {[
@@ -105,10 +104,10 @@ export default function ProjectDetailsPage() {
             ['Documents', project.documents.length],
           ].map(([label, value]) => (
             <div key={label}>
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <dt className="text-xs font-medium uppercase tracking-wide text-text-muted">
                 {label}
               </dt>
-              <dd className="mt-1 text-base font-semibold text-slate-900">
+              <dd className="mt-1 text-base font-semibold text-text-primary">
                 {value}
               </dd>
             </div>
@@ -117,7 +116,7 @@ export default function ProjectDetailsPage() {
       </Card>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <Card className="border border-blue-200">
+        <Card className="border border-violet-400/20">
           <CardHeader
             title="Daily Work Journal"
             subtitle="View the complete history of daily work recorded for this project."
@@ -129,8 +128,8 @@ export default function ProjectDetailsPage() {
             }
           />
           <div className="px-6 pb-5">
-            <p className="text-sm text-slate-600">
-              <strong className="text-slate-900">
+            <p className="text-sm text-text-secondary">
+              <strong className="text-text-primary">
                 {project.journalEntries?.length || 0}
               </strong>{' '}
               journal entries recorded for this project.
@@ -191,7 +190,7 @@ export default function ProjectDetailsPage() {
                 description="Authorised project documents will be listed here."
               />
             ) : (
-              <ul className="divide-y divide-slate-100">
+              <ul className="divide-y divide-border">
                 {project.documents.map((doc) => (
                   <li
                     key={doc.id}
@@ -199,15 +198,15 @@ export default function ProjectDetailsPage() {
                   >
                     <span
                       className="flex h-10 w-10 items-center justify-center rounded-lg
-                        bg-slate-100 text-slate-500"
+                        border border-border bg-surface text-text-muted"
                     >
                       <Icon name="file" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-slate-900">
+                      <p className="truncate text-sm font-medium text-text-primary">
                         {doc.name}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-text-muted">
                         {doc.type} - {doc.sizeKb} KB - {doc.uploadedBy} -{' '}
                         {timeAgo(doc.uploadedAt)}
                       </p>
@@ -237,7 +236,7 @@ export default function ProjectDetailsPage() {
               title="Project members"
               subtitle={`${project.members.length} people`}
             />
-            <ul className="divide-y divide-slate-100">
+            <ul className="divide-y divide-border">
               {project.members.map((member) => (
                 <li
                   key={member.id}
@@ -245,10 +244,10 @@ export default function ProjectDetailsPage() {
                 >
                   <Avatar name={member.name} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-900">
+                    <p className="truncate text-sm font-medium text-text-primary">
                       {member.name}
                     </p>
-                    <p className="truncate text-xs text-slate-500">
+                    <p className="truncate text-xs text-text-muted">
                       {member.role}
                     </p>
                   </div>

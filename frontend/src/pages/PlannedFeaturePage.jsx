@@ -93,9 +93,9 @@ export default function PlannedFeaturePage() {
 
   if (!feature) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-        <p className="font-semibold text-slate-800">
-          Planned feature not found
+      <div className="rounded-xl border border-border bg-surface-raised p-8 text-center">
+        <p className="font-semibold text-text-primary">
+          Feature not found
         </p>
       </div>
     )
@@ -103,66 +103,59 @@ export default function PlannedFeaturePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-            {feature.title}
-          </h2>
-          <p className="mt-1 text-sm text-slate-500">
-            {feature.subtitle}
-          </p>
-        </div>
-
-        <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-800">
-          Coming in Round 3
-        </span>
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight text-text-primary">
+          {feature.title}
+        </h2>
+        <p className="mt-1 text-sm text-text-muted">
+          {feature.subtitle}
+        </p>
       </div>
 
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="bg-slate-950 px-6 py-9 text-white sm:px-8">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-3xl">
+      <section className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-lg shadow-black/10">
+        <div className="bg-gradient-to-br from-[#09091d] via-[#15132f] to-[#251447] px-6 py-9 text-white sm:px-8">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.08] text-3xl shadow-lg shadow-violet-950/20">
             {feature.icon}
           </div>
 
-          <p className="mt-5 text-xs font-bold uppercase tracking-widest text-blue-300">
-            KnowFlow · Planned Development
+          <p className="mt-5 text-xs font-bold uppercase tracking-widest text-violet-300">
+            KnowFlow Workspace
           </p>
 
           <h3 className="mt-2 text-2xl font-bold">
-            This feature is planned for Round 3
+            {feature.title}
           </h3>
 
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-300">
-            This section is visible as part of the KnowFlow roadmap.
-            Its complete functionality will be developed during Round 3.
-            No unfinished functionality is being presented as operational.
+            This feature is currently being developed. Its capabilities will
+            become available once implementation and testing are complete.
           </p>
         </div>
 
         <div className="p-6 sm:p-8">
-          <h3 className="text-base font-bold text-slate-900">
+          <h3 className="text-base font-bold text-text-primary">
             Planned Capabilities
           </h3>
 
-          <p className="mt-1 text-sm text-slate-500">
-            The following capabilities are planned for this section.
+          <p className="mt-1 text-sm text-text-muted">
+            These are the capabilities intended for this section.
           </p>
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {feature.features.map((item, index) => (
               <article
                 key={item.title}
-                className="rounded-xl border border-slate-200 bg-slate-50 p-5"
+                className="rounded-xl border border-border bg-surface p-5 transition hover:border-violet-400/30 hover:bg-surface-hover"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-sm font-bold text-blue-700">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-400/20 bg-violet-500/10 text-sm font-bold text-violet-300">
                   {String(index + 1).padStart(2, '0')}
                 </div>
 
-                <h4 className="mt-3 text-sm font-bold text-slate-900">
+                <h4 className="mt-3 text-sm font-bold text-text-primary">
                   {item.title}
                 </h4>
 
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 text-sm leading-6 text-text-secondary">
                   {item.description}
                 </p>
               </article>
@@ -170,16 +163,6 @@ export default function PlannedFeaturePage() {
           </div>
         </div>
       </section>
-
-      <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
-        <p className="text-sm font-semibold text-blue-900">
-          KnowFlow Development Roadmap
-        </p>
-        <p className="mt-1 text-sm leading-6 text-blue-800">
-          This capability is part of the planned Round 3 development roadmap.
-          Its complete implementation will be introduced in a future phase.
-        </p>
-      </div>
     </div>
   )
 }

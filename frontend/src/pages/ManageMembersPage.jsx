@@ -147,40 +147,40 @@ export default function ManageMembersPage() {
 
           <div className="p-6">
             <div className="mb-4 flex items-center justify-between">
-              <p className="text-sm font-medium text-slate-700">
+              <p className="text-sm font-medium text-text-secondary">
                 Current members
               </p>
-              <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-700">
+              <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-3 py-1 text-xs font-semibold text-violet-300">
                 {members.length} Members
               </span>
             </div>
 
             {members.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+              <p className="rounded-xl border border-dashed border-border-strong bg-surface p-6 text-center text-sm text-text-muted">
                 No project members found.
               </p>
             ) : (
-              <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200">
+              <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-surface">
                 {members.map((member) => {
                   const isProjectManager = member.role === 'Project Manager'
 
                   return (
                     <li
                       key={member.id}
-                      className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center"
+                      className="flex flex-col gap-3 p-4 transition hover:bg-surface-hover/60 sm:flex-row sm:items-center"
                     >
                       <Avatar name={member.name} size="sm" />
 
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-slate-900">
+                        <p className="truncate text-sm font-semibold text-text-primary">
                           {member.name}
                         </p>
-                        <p className="truncate text-xs text-slate-500">
+                        <p className="truncate text-xs text-text-muted">
                           {member.email}
                         </p>
 
                         {member.departing && (
-                          <span className="mt-1 inline-flex rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                          <span className="mt-1 inline-flex rounded-full border border-amber-400/20 bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-300">
                             Departing member
                           </span>
                         )}
@@ -188,7 +188,7 @@ export default function ManageMembersPage() {
 
                       <div className="flex items-center gap-2">
                         {isProjectManager ? (
-                          <span className="rounded-lg bg-brand-50 px-3 py-2 text-xs font-semibold text-brand-700">
+                          <span className="rounded-lg border border-violet-400/20 bg-violet-500/10 px-3 py-2 text-xs font-semibold text-violet-300">
                             Project Manager
                           </span>
                         ) : (
@@ -208,7 +208,7 @@ export default function ManageMembersPage() {
                               type="button"
                               aria-label={`Remove ${member.name}`}
                               onClick={() => handleRemoveMember(member.id)}
-                              className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                              className="rounded-lg p-2 text-text-muted transition hover:bg-rose-500/10 hover:text-rose-300"
                             >
                               <Icon name="trash-2" className="h-4 w-4" />
                             </button>
@@ -295,11 +295,11 @@ export default function ManageMembersPage() {
 
       <aside className="space-y-4">
         <Card className="p-6">
-          <h3 className="text-base font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-text-primary">
             Member management
           </h3>
 
-          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-600">
+          <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-text-secondary">
             <li>Add new team members using their name and email.</li>
             <li>Change existing members' project roles.</li>
             <li>Remove members who no longer belong to the project.</li>

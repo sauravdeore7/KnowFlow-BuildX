@@ -1,4 +1,3 @@
-
 import { useMemo, useState } from 'react'
 import { PROJECT_STATUS } from '../data/statusConfig'
 import { useApp } from '../hooks/useApp'
@@ -117,22 +116,22 @@ export default function ProjectsPage() {
       value: 'active',
       label: 'Active',
       count: overview.active,
-      color: 'bg-emerald-500',
-      textColor: 'text-emerald-700',
+      color: 'bg-emerald-400',
+      textColor: 'text-emerald-300',
     },
     {
       value: 'under_review',
       label: 'Under Review',
       count: overview.underReview,
-      color: 'bg-amber-500',
-      textColor: 'text-amber-700',
+      color: 'bg-amber-400',
+      textColor: 'text-amber-300',
     },
     {
       value: 'completed',
       label: 'Completed',
       count: overview.completed,
-      color: 'bg-brand-600',
-      textColor: 'text-brand-700',
+      color: 'bg-violet-500',
+      textColor: 'text-violet-300',
     },
   ]
 
@@ -149,28 +148,28 @@ export default function ProjectsPage() {
       value: overview.total,
       description: 'Across your workspace',
       icon: 'folder',
-      iconStyle: 'bg-brand-50 text-brand-600',
+      iconStyle: 'bg-violet-500/15 text-violet-300',
     },
     {
       label: 'Active Projects',
       value: overview.active,
       description: 'Currently in progress',
       icon: 'activity',
-      iconStyle: 'bg-emerald-50 text-emerald-600',
+      iconStyle: 'bg-emerald-500/15 text-emerald-300',
     },
     {
       label: 'Under Review',
       value: overview.underReview,
       description: 'Awaiting review',
       icon: 'clipboard-check',
-      iconStyle: 'bg-amber-50 text-amber-600',
+      iconStyle: 'bg-amber-500/15 text-amber-300',
     },
     {
       label: 'Completed',
       value: overview.completed,
       description: 'Marked as completed',
       icon: 'check-circle',
-      iconStyle: 'bg-blue-50 text-blue-600',
+      iconStyle: 'bg-indigo-500/15 text-indigo-300',
     },
   ]
 
@@ -180,21 +179,21 @@ export default function ProjectsPage() {
       value: employeeOverview.assigned,
       description: 'Projects assigned to you',
       icon: 'folder',
-      iconStyle: 'bg-brand-50 text-brand-600',
+      iconStyle: 'bg-violet-500/15 text-violet-300',
     },
     {
       label: 'My Contributions',
       value: employeeOverview.contributions,
       description: 'Your recorded journal entries',
       icon: 'book',
-      iconStyle: 'bg-emerald-50 text-emerald-600',
+      iconStyle: 'bg-emerald-500/15 text-emerald-300',
     },
     {
       label: 'Pending Tasks',
       value: employeeOverview.pendingTasks,
       description: 'Tasks recorded in your journals',
       icon: 'list-checks',
-      iconStyle: 'bg-amber-50 text-amber-600',
+      iconStyle: 'bg-amber-500/15 text-amber-300',
     },
   ]
 
@@ -207,10 +206,10 @@ export default function ProjectsPage() {
       {/* Page heading */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 className="text-2xl font-bold tracking-tight text-text-primary">
             {isManager ? 'All Projects' : 'My Projects'}
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-muted">
             {isManager
               ? 'Manage projects, track progress and preserve team knowledge.'
               : 'View your assigned projects, contributions and ongoing work.'}
@@ -238,13 +237,13 @@ export default function ProjectsPage() {
             <Card key={item.label} className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-sm font-medium text-slate-500">
+                  <p className="text-sm font-medium text-text-muted">
                     {item.label}
                   </p>
-                  <p className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+                  <p className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
                     {item.value}
                   </p>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-text-faint">
                     {item.description}
                   </p>
                 </div>
@@ -261,7 +260,7 @@ export default function ProjectsPage() {
       )}
 
       {/* Search and filters */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-border bg-surface-raised p-4 shadow-sm shadow-black/10">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="w-full lg:max-w-sm">
             <SearchInput
@@ -288,8 +287,8 @@ export default function ProjectsPage() {
                 aria-pressed={filter === item.value}
                 className={`rounded-xl px-4 py-2 text-sm font-semibold transition ${
                   filter === item.value
-                    ? 'bg-brand-600 text-white shadow-sm'
-                    : 'border border-slate-200 bg-white text-slate-600 hover:border-brand-300 hover:bg-brand-50 hover:text-brand-700'
+                    ? 'bg-violet-600 text-white shadow-lg shadow-violet-950/30'
+                    : 'border border-border bg-surface text-text-secondary hover:border-violet-500/50 hover:bg-violet-500/10 hover:text-violet-300'
                 }`}
               >
                 {item.label}
@@ -349,10 +348,10 @@ export default function ProjectsPage() {
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="text-lg font-bold text-text-primary">
                 {isManager ? 'Your Projects' : 'Assigned Projects'}
               </h3>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-text-muted">
                 Showing {filtered.length} of {projects.length} projects
               </p>
             </div>
@@ -388,20 +387,20 @@ export default function ProjectsPage() {
           <Card className="p-5 sm:p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-text-primary">
                   Portfolio Overview
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-text-muted">
                   Distribution of projects by current status
                 </p>
               </div>
 
-              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
+              <span className="rounded-lg border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-text-secondary">
                 {overview.total} Total
               </span>
             </div>
 
-            <div className="mt-6 flex h-3 w-full overflow-hidden rounded-full bg-slate-100">
+            <div className="mt-6 flex h-3 w-full overflow-hidden rounded-full bg-surface">
               {statusDistribution.map((item) => (
                 <div
                   key={item.value}
@@ -424,7 +423,7 @@ export default function ProjectsPage() {
                     className={`h-3 w-3 shrink-0 rounded-full ${item.color}`}
                   />
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-slate-600">
+                    <p className="text-sm font-medium text-text-secondary">
                       {item.label}
                     </p>
                     <p className={`mt-0.5 text-xl font-bold ${item.textColor}`}>

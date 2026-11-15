@@ -72,17 +72,6 @@ def to_text(value):
     return str(value)
 
 
-def get_source_label(source):
-    if isinstance(source, dict):
-        return (
-            source.get("journal_id")
-            or source.get("document_id")
-            or source.get("source_type")
-        )
-
-    return source
-
-
 def get_handover_status(handover):
     status = handover.get("status", "")
 
@@ -658,11 +647,15 @@ def get_projects(
             project_knowledge = []
 
             for item in knowledge_by_project.get(project_id, []):
+                source = item.get("source")
+
                 project_knowledge.append({
                     "id": item["id"],
                     "type": item["item_type"],
                     "text": item["content"],
-                    "source": get_source_label(item.get("source"))
+                    "source": (
+                        source if isinstance(source, dict) else None
+                    )
                 })
 
             knowledge_summary = (

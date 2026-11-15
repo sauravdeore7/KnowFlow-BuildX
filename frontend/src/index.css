@@ -1,22 +1,105 @@
 
 @import "tailwindcss";
 
-/* KnowFlow design tokens. These create classes such as bg-brand-600 and text-brand-400. */
+/* =========================================================
+   KNOWFLOW DESIGN SYSTEM — MIDNIGHT VIOLET
+   Central design tokens for the new visual theme.
+   ========================================================= */
+
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
-  --color-brand-50: #eff4ff;
-  --color-brand-100: #dbe6fe;
-  --color-brand-400: #5b8cff;
-  --color-brand-500: #3b6cf6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+
+  /* Application backgrounds */
+  --color-canvas: #070816;
+  --color-canvas-deep: #05061a;
+
+  /* Surfaces */
+  --color-surface: #0b0c1f;
+  --color-surface-raised: #12132b;
+  --color-surface-hover: #191a38;
+  --color-surface-overlay: #1d1e3b;
+
+  /* Borders */
+  --color-border: #252640;
+  --color-border-subtle: rgb(255 255 255 / 0.08);
+  --color-border-strong: rgb(255 255 255 / 0.16);
+
+  /* Text */
+  --color-text-primary: #f5f5ff;
+  --color-text-secondary: #b5b6d0;
+  --color-text-muted: #a3a6c2;
+  --color-text-faint: #8588a8;
+
+  /* Violet accent scale */
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6;
+
+  /* Indigo accent scale */
+  --color-indigo-400: #818cf8;
+  --color-indigo-500: #6366f1;
+  --color-indigo-600: #4f46e5;
+  --color-indigo-700: #4338ca;
+
+  /* Background glow colours */
+  --color-glow-violet: rgb(124 58 237 / 0.35);
+  --color-glow-purple: rgb(139 92 246 / 0.25);
+  --color-glow-indigo: rgb(59 47 217 / 0.3);
+
+  /* Success */
+  --color-success: #34d399;
+  --color-success-soft: rgb(52 211 153 / 0.12);
+  --color-success-border: rgb(52 211 153 / 0.25);
+
+  /* Warning */
+  --color-warning: #fbbf24;
+  --color-warning-soft: rgb(251 191 36 / 0.12);
+  --color-warning-border: rgb(251 191 36 / 0.25);
+
+  /* Danger */
+  --color-danger: #f87171;
+  --color-danger-soft: rgb(248 113 113 / 0.12);
+  --color-danger-border: rgb(248 113 113 / 0.25);
+
+  /* Information */
+  --color-info: #7dd3fc;
+  --color-info-soft: rgb(125 211 252 / 0.12);
+  --color-info-border: rgb(125 211 252 / 0.25);
+
+  /* Existing brand tokens — preserved and remapped to violet */
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-400: #a78bfa;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+
+  /* Radius tokens */
+  --radius-card: 20px;
+  --radius-card-lg: 24px;
+  --radius-panel: 28px;
 }
+
+/* =========================================================
+   GLOBAL BASE STYLES — MIDNIGHT VIOLET
+   ========================================================= */
 
 body {
   margin: 0;
-  background-color: #f8fafc;
-  color: #0f172a;
+  min-height: 100vh;
+  background-color: #070816;
+  color: #f5f5ff;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 

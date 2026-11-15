@@ -1,6 +1,6 @@
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+  (import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '')
 
 async function handoverRequest(accessToken, path, body) {
   if (!accessToken) {
@@ -24,7 +24,15 @@ async function handoverRequest(accessToken, path, body) {
     )
   }
 
-  const data = await response.json()
+  let data
+
+  try {
+    data = await response.json()
+  } catch {
+    throw new Error(
+      'The server returned an invalid response. Please try again.',
+    )
+  }
 
   if (!response.ok) {
     throw new Error(
@@ -35,7 +43,34 @@ async function handoverRequest(accessToken, path, body) {
   return data
 }
 
-export async function confirmHandover(accessToken, handoverId, comments = '') {
+// --------------------------------------------------
+// CREATE HANDOVER - EMPLOYEE
+// --------------------------------------------------
+
+export async function createHandover(
+  accessToken,
+  projectId,
+  comments = '',
+) {
+  if (!projectId) {
+    throw new Error('Please select a project.')
+  }
+
+  return handoverRequest(accessToken, '/handovers/create', {
+    project_id: projectId,
+    comments: comments.trim(),
+  })
+}
+
+// --------------------------------------------------
+// EMPLOYEE CONFIRMATION
+// --------------------------------------------------
+
+export async function confirmHandover(
+  accessToken,
+  handoverId,
+  comments = '',
+) {
   if (!handoverId) {
     throw new Error('Handover record not found. Please refresh the page.')
   }
@@ -47,7 +82,15 @@ export async function confirmHandover(accessToken, handoverId, comments = '') {
   )
 }
 
-export async function approveHandover(accessToken, handoverId, goodWishes) {
+// --------------------------------------------------
+// MANAGER APPROVAL
+// --------------------------------------------------
+
+export async function approveHandover(
+  accessToken,
+  handoverId,
+  goodWishes,
+) {
   if (!handoverId) {
     throw new Error('Handover record not found.')
   }
@@ -59,7 +102,15 @@ export async function approveHandover(accessToken, handoverId, goodWishes) {
   )
 }
 
-export async function requestHandoverChanges(accessToken, handoverId, feedback) {
+// --------------------------------------------------
+// MANAGER REQUESTS CHANGES
+// --------------------------------------------------
+
+export async function requestHandoverChanges(
+  accessToken,
+  handoverId,
+  feedback,
+) {
   if (!handoverId) {
     throw new Error('Handover record not found.')
   }
@@ -70,6 +121,10 @@ export async function requestHandoverChanges(accessToken, handoverId, feedback) 
     { feedback },
   )
 }
+
+// --------------------------------------------------
+// MANAGER SHARES HANDOVER
+// --------------------------------------------------
 
 export async function shareHandover(
   accessToken,
@@ -91,7 +146,14 @@ export async function shareHandover(
   )
 }
 
-export async function revokeHandoverAccess(accessToken, handoverId) {
+// --------------------------------------------------
+// MANAGER REVOKES INCOMING ACCESS
+// --------------------------------------------------
+
+export async function revokeHandoverAccess(
+  accessToken,
+  handoverId,
+) {
   if (!handoverId) {
     throw new Error('Handover record not found.')
   }

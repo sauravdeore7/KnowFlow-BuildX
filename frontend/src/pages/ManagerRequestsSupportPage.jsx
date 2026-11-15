@@ -14,15 +14,15 @@ const REQUEST_TYPES = [
 ]
 
 const STATUS_STYLES = {
-  Pending: 'bg-amber-50 text-amber-700 border-amber-200',
-  'In Review': 'bg-blue-50 text-blue-700 border-blue-200',
-  Resolved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  Pending: 'border-amber-500/20 bg-amber-500/10 text-amber-300',
+  'In Review': 'border-sky-500/20 bg-sky-500/10 text-sky-300',
+  Resolved: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300',
 }
 
 const PRIORITY_STYLES = {
-  High: 'bg-rose-50 text-rose-700',
-  Medium: 'bg-amber-50 text-amber-700',
-  Low: 'bg-slate-100 text-slate-600',
+  High: 'bg-rose-500/10 text-rose-300',
+  Medium: 'bg-amber-500/10 text-amber-300',
+  Low: 'bg-surface-hover text-text-secondary',
 }
 
 function formatDate(value) {
@@ -43,7 +43,6 @@ function formatDate(value) {
 
 function normalizePriority(value) {
   const priority = String(value || 'Medium').toLowerCase()
-
   return priority.charAt(0).toUpperCase() + priority.slice(1)
 }
 
@@ -69,10 +68,11 @@ function enrichRequest(request, projects) {
 function StatusBadge({ status }) {
   return (
     <span
-      className={`inline-flex rounded-lg border px-3 py-1.5 text-xs font-semibold ${
+      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-semibold ${
         STATUS_STYLES[status] || STATUS_STYLES.Pending
       }`}
     >
+      <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {status}
     </span>
   )
@@ -80,15 +80,17 @@ function StatusBadge({ status }) {
 
 function MetricCard({ label, value, icon, color, description }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold text-slate-900">{value}</p>
-          <p className="mt-1 text-xs text-slate-500">{description}</p>
+    <div className="rounded-2xl border border-border bg-surface-raised p-4 transition hover:border-violet-400/25 sm:p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-text-muted">{label}</p>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
+            {value}
+          </p>
+          <p className="mt-1 text-xs text-text-muted">{description}</p>
         </div>
 
-        <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${color}`}>
+        <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${color}`}>
           <Icon name={icon} className="h-5 w-5" />
         </span>
       </div>
@@ -100,10 +102,27 @@ function RequestTypeLabel({ type }) {
   const requestType = REQUEST_TYPES.find((item) => item.value === type)
 
   return (
-    <span className="inline-flex items-center gap-2 text-xs font-medium text-slate-600">
-      <Icon name={requestType?.icon || 'clipboard'} className="h-4 w-4" />
+    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+      <Icon name={requestType?.icon || 'clipboard'} className="h-3.5 w-3.5" />
       {requestType?.label || 'General Request'}
     </span>
+  )
+}
+
+function FilterSelect({ label, value, onChange, children }) {
+  return (
+    <div className="min-w-0">
+      <label className="mb-1.5 block text-xs font-medium text-text-muted">
+        {label}
+      </label>
+      <select
+        value={value}
+        onChange={onChange}
+        className="w-full rounded-xl border border-border bg-surface-raised px-3 py-2.5 text-sm text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+      >
+        {children}
+      </select>
+    </div>
   )
 }
 
@@ -142,13 +161,12 @@ export default function ManagerRequestsSupportPage() {
       const enriched = data
         .map((request) => enrichRequest(request, projects))
         .sort(
-          (a, b) =>
-            new Date(b.createdAt) - new Date(a.createdAt)
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
         )
 
       setRequests(enriched)
     } catch (error) {
-      setLoadError(error.message)
+      setLoadError(error.message || 'Unable to load employee requests.')
     } finally {
       setLoading(false)
     }
@@ -223,17 +241,28 @@ export default function ManagerRequestsSupportPage() {
     employeeFilter,
   ])
 
-  const selectedRequest = filteredRequests.find(
-    (request) => request.recordKey === selectedKey
-  )
+  const selectedRequest =
+    filteredRequests.find((request) => request.recordKey === selectedKey) ||
+    filteredRequests[0] ||
+    null
 
   useEffect(() => {
     if (selectedRequest) {
+      setSelectedKey(selectedRequest.recordKey)
       setResponseDraft(selectedRequest.response || '')
       setStatusDraft(selectedRequest.status || 'Pending')
       setFeedback('')
+    } else {
+      setSelectedKey('')
+      setResponseDraft('')
+      setStatusDraft('Pending')
+      setFeedback('')
     }
-  }, [selectedKey, requests])
+  }, [
+    selectedRequest?.recordKey,
+    selectedRequest?.response,
+    selectedRequest?.status,
+  ])
 
   async function saveChanges() {
     if (!selectedRequest || saving) return
@@ -263,9 +292,7 @@ export default function ManagerRequestsSupportPage() {
 
       setRequests((current) =>
         current.map((request) =>
-          request.id === selectedRequest.id
-            ? savedRequest
-            : request
+          request.id === selectedRequest.id ? savedRequest : request
         )
       )
 
@@ -277,21 +304,40 @@ export default function ManagerRequestsSupportPage() {
     }
   }
 
+  function clearFilters() {
+    setSearch('')
+    setStatusFilter('All')
+    setProjectFilter('All')
+    setTypeFilter('All')
+    setPriorityFilter('All')
+    setEmployeeFilter('All')
+  }
+
+  const hasExtraFilters =
+    projectFilter !== 'All' ||
+    employeeFilter !== 'All' ||
+    typeFilter !== 'All' ||
+    priorityFilter !== 'All'
+
   return (
-    <div className="space-y-7">
+    <div className="space-y-6">
+
+      {/* Page Header */}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
+          <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-violet-300">
             <Icon name="clipboard" className="h-4 w-4" />
-            Manager Workspace
+            MANAGER WORKSPACE
+            <span className="text-text-faint">/</span>
+            <span className="text-text-muted">Team Support</span>
           </div>
 
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+          <h2 className="text-2xl font-bold tracking-tight text-text-primary">
             Requests & Support
           </h2>
 
-          <p className="mt-2 text-sm text-slate-500">
-            Review employee requests, respond to concerns and manage their progress.
+          <p className="mt-1.5 text-sm text-text-muted">
+            Stay on top of employee requests and keep your team moving forward.
           </p>
         </div>
 
@@ -299,391 +345,539 @@ export default function ManagerRequestsSupportPage() {
           type="button"
           onClick={refreshRequests}
           disabled={loading}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 self-start rounded-xl border border-border bg-surface-raised px-4 py-2.5 text-sm font-semibold text-text-secondary transition hover:border-violet-400/30 hover:bg-surface-hover hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <Icon name="search" className="h-4 w-4" />
-          {loading ? 'Refreshing...' : 'Refresh Requests'}
+          <Icon name="refreshCw" className="h-4 w-4" />
+          {loading ? 'Refreshing...' : 'Refresh'}
         </button>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Overview */}
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard
           label="Total Requests"
           value={counts.total}
           icon="clipboard"
-          color="bg-blue-50 text-blue-600"
+          color="bg-violet-500/10 text-violet-300"
           description="Received from employees"
         />
         <MetricCard
           label="Pending"
           value={counts.pending}
           icon="clock"
-          color="bg-amber-50 text-amber-600"
-          description="Awaiting review"
+          color="bg-amber-500/10 text-amber-300"
+          description="Awaiting your attention"
         />
         <MetricCard
           label="In Review"
           value={counts.inReview}
           icon="search"
-          color="bg-violet-50 text-violet-600"
+          color="bg-sky-500/10 text-sky-300"
           description="Currently being reviewed"
         />
         <MetricCard
           label="Resolved"
           value={counts.resolved}
           icon="checkCircle"
-          color="bg-emerald-50 text-emerald-600"
-          description="Requests completed"
+          color="bg-emerald-500/10 text-emerald-300"
+          description="Successfully addressed"
         />
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 p-5">
-          <h3 className="text-lg font-semibold text-slate-900">
-            Employee Request Inbox
-          </h3>
-          <p className="mt-1 text-sm text-slate-500">
-            Find and filter requests submitted across your projects.
-          </p>
-        </div>
+      {/* Main Workspace */}
+      <div className="overflow-hidden rounded-2xl border border-border bg-surface-raised">
 
-        <div className="grid gap-3 border-b border-slate-100 bg-slate-50/70 p-5 sm:grid-cols-2 xl:grid-cols-3">
-          <div className="relative sm:col-span-2 xl:col-span-3">
-            <Icon
-              name="search"
-              className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
-            />
-            <input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search by title, employee, project or request ID..."
-              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-            />
+        {/* Workspace Heading */}
+        <div className="flex flex-col justify-between gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center">
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="text-base font-semibold text-text-primary">
+                Employee Requests
+              </h3>
+              <span className="rounded-md bg-violet-500/10 px-2 py-0.5 text-xs font-semibold text-violet-300">
+                {filteredRequests.length}
+              </span>
+            </div>
+            <p className="mt-1 text-xs text-text-muted">
+              Review requests, understand concerns and respond to your team.
+            </p>
           </div>
 
-          <select
-            value={projectFilter}
-            onChange={(event) => setProjectFilter(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400"
-          >
-            <option value="All">All Projects</option>
-            {projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={employeeFilter}
-            onChange={(event) => setEmployeeFilter(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400"
-          >
-            <option value="All">All Employees</option>
-            {employees.map((employee) => (
-              <option key={employee} value={employee}>
-                {employee}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={typeFilter}
-            onChange={(event) => setTypeFilter(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400"
-          >
-            <option value="All">All Request Types</option>
-            {REQUEST_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={priorityFilter}
-            onChange={(event) => setPriorityFilter(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400"
-          >
-            <option value="All">All Priorities</option>
-            <option value="High">High Priority</option>
-            <option value="Medium">Medium Priority</option>
-            <option value="Low">Low Priority</option>
-          </select>
-
-          <select
-            value={statusFilter}
-            onChange={(event) => setStatusFilter(event.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-400"
-          >
-            <option value="All">All Statuses</option>
-            <option value="Pending">Pending</option>
-            <option value="In Review">In Review</option>
-            <option value="Resolved">Resolved</option>
-          </select>
+          <div className="flex items-center gap-2 text-xs text-text-muted">
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            Secure project inbox
+          </div>
         </div>
 
-        {loadError && (
-          <div className="m-5 rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
-            {loadError}
-          </div>
-        )}
+        {/* Search and Status Filters */}
+        <div className="space-y-3 border-b border-border bg-surface px-4 py-4 sm:px-5">
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="relative min-w-0 flex-1">
+              <Icon
+                name="search"
+                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-faint"
+              />
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder="Search requests, employees or projects..."
+                className="w-full rounded-xl border border-border bg-surface-raised py-2.5 pl-9 pr-3 text-sm text-text-primary outline-none transition placeholder:text-text-faint focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
+              />
+            </div>
 
-        <div className="grid min-h-[440px] xl:grid-cols-[1fr_1fr]">
-          <div className="border-b border-slate-200 xl:border-b-0 xl:border-r">
-            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Requests
-              </p>
-              <span className="text-xs font-medium text-slate-500">
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-raised px-3 py-2.5 text-xs font-semibold text-text-secondary transition hover:border-violet-400/25 hover:text-violet-300"
+            >
+              <Icon name="filter" className="h-4 w-4" />
+              Clear filters
+            </button>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {['All', 'Pending', 'In Review', 'Resolved'].map((filter) => {
+              const active = statusFilter === filter
+
+              const count =
+                filter === 'All'
+                  ? requests.length
+                  : counts[
+                      filter === 'In Review'
+                        ? 'inReview'
+                        : filter.toLowerCase()
+                    ]
+
+              return (
+                <button
+                  key={filter}
+                  type="button"
+                  onClick={() => setStatusFilter(filter)}
+                  className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold transition ${
+                    active
+                      ? 'bg-violet-600 text-white shadow-sm shadow-violet-950/20'
+                      : 'border border-border bg-surface-raised text-text-secondary hover:border-violet-400/25 hover:text-text-primary'
+                  }`}
+                >
+                  {filter}
+                  <span className={active ? 'text-white/75' : 'text-text-muted'}>
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Additional Filters */}
+          <details className="group rounded-xl border border-border bg-surface-raised">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3 text-xs font-semibold text-text-secondary [&::-webkit-details-marker]:hidden">
+              <span className="flex items-center gap-2">
+                <Icon name="sliders" className="h-4 w-4 text-violet-300" />
+                More filters
+                {hasExtraFilters && (
+                  <span className="rounded-md bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-violet-300">
+                    Active
+                  </span>
+                )}
+              </span>
+              <Icon
+                name="chevronDown"
+                className="h-4 w-4 text-text-muted transition group-open:rotate-180"
+              />
+            </summary>
+
+            <div className="grid gap-3 border-t border-border p-3 sm:grid-cols-2 xl:grid-cols-4">
+              <FilterSelect
+                label="Project"
+                value={projectFilter}
+                onChange={(event) => setProjectFilter(event.target.value)}
+              >
+                <option value="All">All Projects</option>
+                {projects.map((project) => (
+                  <option key={project.id} value={project.id}>
+                    {project.name}
+                  </option>
+                ))}
+              </FilterSelect>
+
+              <FilterSelect
+                label="Employee"
+                value={employeeFilter}
+                onChange={(event) => setEmployeeFilter(event.target.value)}
+              >
+                <option value="All">All Employees</option>
+                {employees.map((employee) => (
+                  <option key={employee} value={employee}>
+                    {employee}
+                  </option>
+                ))}
+              </FilterSelect>
+
+              <FilterSelect
+                label="Request Type"
+                value={typeFilter}
+                onChange={(event) => setTypeFilter(event.target.value)}
+              >
+                <option value="All">All Request Types</option>
+                {REQUEST_TYPES.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
+              </FilterSelect>
+
+              <FilterSelect
+                label="Priority"
+                value={priorityFilter}
+                onChange={(event) => setPriorityFilter(event.target.value)}
+              >
+                <option value="All">All Priorities</option>
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium Priority</option>
+                <option value="Low">Low Priority</option>
+              </FilterSelect>
+            </div>
+          </details>
+        </div>
+
+        {/* Inbox and Details */}
+        <div className="grid min-h-[560px] xl:grid-cols-[0.9fr_1.1fr]">
+
+          {/* Request Inbox */}
+          <section className="min-w-0 border-b border-border xl:border-b-0 xl:border-r">
+            <div className="flex items-center justify-between border-b border-border-subtle px-4 py-3 sm:px-5">
+              <div>
+                <p className="text-sm font-semibold text-text-primary">
+                  Request inbox
+                </p>
+                <p className="mt-0.5 text-xs text-text-muted">
+                  Latest submissions first
+                </p>
+              </div>
+              <span className="text-xs text-text-muted">
                 {filteredRequests.length} results
               </span>
             </div>
 
+            {loadError && (
+              <div className="m-4 rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 text-sm text-rose-300">
+                {loadError}
+              </div>
+            )}
+
             {loading ? (
-              <div className="px-5 py-16 text-center text-sm text-slate-500">
-                Loading employee requests...
+              <div className="px-5 py-16 text-center">
+                <Icon name="loader" className="mx-auto h-6 w-6 animate-spin text-violet-300" />
+                <p className="mt-3 text-sm text-text-muted">
+                  Loading employee requests...
+                </p>
               </div>
             ) : filteredRequests.length === 0 ? (
               <div className="px-5 py-16 text-center">
-                <Icon
-                  name="clipboard"
-                  className="mx-auto h-9 w-9 text-slate-300"
-                />
-                <h3 className="mt-3 font-semibold text-slate-900">
+                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface text-text-faint">
+                  <Icon name="inbox" className="h-6 w-6" />
+                </span>
+                <h4 className="mt-3 text-sm font-semibold text-text-primary">
                   No requests found
-                </h3>
-                <p className="mt-1 text-sm text-slate-500">
-                  Employee requests will appear here when available.
+                </h4>
+                <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-text-muted">
+                  Try changing your search or filters to find employee requests.
                 </p>
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="mt-3 text-xs font-semibold text-violet-300 hover:text-violet-200"
+                >
+                  Clear all filters
+                </button>
               </div>
             ) : (
-              <div className="max-h-[650px] overflow-y-auto">
+              <div className="max-h-[680px] overflow-y-auto">
                 {filteredRequests.map((request) => {
-                  const active = selectedKey === request.recordKey
+                  const active = selectedRequest?.recordKey === request.recordKey
 
                   return (
                     <button
                       key={request.recordKey}
                       type="button"
-                      onClick={() => setSelectedKey(request.recordKey)}
-                      className={`w-full border-b border-slate-100 p-5 text-left transition last:border-0 ${
+                      onClick={() => {
+                        setSelectedKey(request.recordKey)
+                        setFeedback('')
+                      }}
+                      className={`w-full border-b border-border-subtle p-4 text-left transition last:border-0 sm:p-5 ${
                         active
-                          ? 'bg-blue-50/80'
-                          : 'bg-white hover:bg-slate-50'
+                          ? 'border-l-2 border-l-violet-400 bg-violet-500/[0.08]'
+                          : 'border-l-2 border-l-transparent hover:bg-surface-hover'
                       }`}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-slate-900">
-                            {request.title}
-                          </p>
-                          <p className="mt-1 truncate text-xs text-slate-500">
-                            {request.submittedByName} · {request.submittedBy}
-                          </p>
-                        </div>
-
-                        <StatusBadge status={request.status} />
-                      </div>
-
-                      <div className="mt-3 flex flex-wrap items-center gap-2">
-                        <RequestTypeLabel type={request.type} />
-                        <span className="text-xs text-slate-300">·</span>
-                        <span className="text-xs text-slate-500">
-                          {request.projectName}
-                        </span>
-                      </div>
-
-                      <div className="mt-3 flex items-center justify-between gap-2">
-                        <span className={`rounded-md px-2 py-1 text-xs font-semibold ${
-                          PRIORITY_STYLES[request.priority] || PRIORITY_STYLES.Medium
+                      <div className="flex items-start gap-3">
+                        <span className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${
+                          active
+                            ? 'bg-violet-500/15 text-violet-300'
+                            : 'border border-border bg-surface text-text-muted'
                         }`}>
-                          {request.priority} Priority
+                          <Icon
+                            name={REQUEST_TYPES.find((item) => item.value === request.type)?.icon || 'clipboard'}
+                            className="h-4 w-4"
+                          />
                         </span>
-                        <span className="text-xs text-slate-400">
-                          {formatDate(request.createdAt)}
-                        </span>
+
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <p className="min-w-0 flex-1 truncate text-sm font-semibold text-text-primary">
+                              {request.title}
+                            </p>
+                            <StatusBadge status={request.status} />
+                          </div>
+
+                          <p className="mt-1 text-xs text-text-muted">
+                            {request.submittedByName}
+                          </p>
+
+                          <p className="mt-2 line-clamp-2 text-xs leading-5 text-text-secondary">
+                            {request.description}
+                          </p>
+
+                          <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex min-w-0 flex-wrap items-center gap-2">
+                              <span className={`rounded-md px-2 py-1 text-[10px] font-semibold ${
+                                PRIORITY_STYLES[request.priority] || PRIORITY_STYLES.Medium
+                              }`}>
+                                {request.priority}
+                              </span>
+                              <span className="max-w-[170px] truncate text-[11px] text-text-muted">
+                                {request.projectName}
+                              </span>
+                            </div>
+
+                            <span className="text-[11px] text-text-muted">
+                              {formatDate(request.createdAt)}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </button>
                   )
                 })}
               </div>
             )}
-          </div>
+          </section>
 
-          <div className="p-5">
+          {/* Request Details */}
+          <section className="min-w-0 bg-surface-raised">
             {!selectedRequest ? (
-              <div className="flex h-full min-h-[350px] flex-col items-center justify-center text-center">
-                <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
-                  <Icon name="fileText" className="h-7 w-7" />
+              <div className="flex h-full min-h-[420px] flex-col items-center justify-center px-6 text-center">
+                <span className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-surface text-text-faint">
+                  <Icon name="messageSquare" className="h-7 w-7" />
                 </span>
-                <h3 className="mt-4 font-semibold text-slate-900">
-                  Request Details
+                <h3 className="mt-4 text-base font-semibold text-text-primary">
+                  Request details
                 </h3>
-                <p className="mt-2 max-w-xs text-sm text-slate-500">
-                  Select a request from the inbox to review its details and respond.
+                <p className="mt-2 max-w-xs text-sm leading-6 text-text-muted">
+                  Select an employee request from the inbox to view its details and send a response.
                 </p>
               </div>
             ) : (
-              <div className="space-y-5">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-                      {selectedRequest.id}
-                    </p>
-                    <h3 className="mt-2 text-lg font-bold text-slate-900">
-                      {selectedRequest.title}
-                    </h3>
+              <div>
+                {/* Detail Header */}
+                <div className="border-b border-border px-5 py-4 sm:px-6">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-violet-300">
+                        REQUEST DETAILS
+                      </p>
+                      <p className="mt-1 text-xs text-text-muted">
+                        Request #{selectedRequest.id}
+                      </p>
+                    </div>
+                    <StatusBadge status={selectedRequest.status} />
                   </div>
-                  <StatusBadge status={selectedRequest.status} />
+
+                  <h3 className="mt-3 text-lg font-bold leading-snug text-text-primary">
+                    {selectedRequest.title}
+                  </h3>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <RequestTypeLabel type={selectedRequest.type} />
+                    <span className="text-text-faint">·</span>
+                    <span className={`rounded-md px-2 py-1 text-[10px] font-semibold ${
+                      PRIORITY_STYLES[selectedRequest.priority] || PRIORITY_STYLES.Medium
+                    }`}>
+                      {selectedRequest.priority} Priority
+                    </span>
+                  </div>
                 </div>
 
-                <div className="grid gap-3 rounded-xl bg-slate-50 p-4 sm:grid-cols-2">
-                  <div>
-                    <p className="text-xs text-slate-500">Submitted by</p>
-                    <p className="mt-1 break-all text-sm font-semibold text-slate-800">
-                      {selectedRequest.submittedByName}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {selectedRequest.submittedBy}
-                    </p>
-                  </div>
+                <div className="space-y-5 p-5 sm:p-6">
 
-                  <div>
-                    <p className="text-xs text-slate-500">Project</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-800">
-                      {selectedRequest.projectName}
-                    </p>
-                  </div>
+                  {/* Employee and Project Information */}
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-xl border border-border bg-surface p-3.5">
+                      <div className="flex items-center gap-2 text-xs text-text-muted">
+                        <Icon name="user" className="h-3.5 w-3.5" />
+                        Submitted by
+                      </div>
+                      <p className="mt-2 text-sm font-semibold text-text-primary">
+                        {selectedRequest.submittedByName}
+                      </p>
+                      <p className="mt-0.5 break-all text-xs text-text-muted">
+                        {selectedRequest.submittedBy}
+                      </p>
+                    </div>
 
-                  <div>
-                    <p className="text-xs text-slate-500">Request type</p>
-                    <div className="mt-1">
-                      <RequestTypeLabel type={selectedRequest.type} />
+                    <div className="rounded-xl border border-border bg-surface p-3.5">
+                      <div className="flex items-center gap-2 text-xs text-text-muted">
+                        <Icon name="folder" className="h-3.5 w-3.5" />
+                        Related project
+                      </div>
+                      <p className="mt-2 text-sm font-semibold text-text-primary">
+                        {selectedRequest.projectName}
+                      </p>
+                      <p className="mt-0.5 text-xs text-text-muted">
+                        {formatDate(selectedRequest.createdAt)}
+                      </p>
                     </div>
                   </div>
 
-                  <div>
-                    <p className="text-xs text-slate-500">Priority</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-800">
-                      {selectedRequest.priority}
-                    </p>
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <p className="text-xs text-slate-500">Submitted on</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-800">
-                      {formatDate(selectedRequest.createdAt)}
-                    </p>
-                  </div>
-                </div>
-
-                {selectedRequest.documentName && (
-                  <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
-                    <p className="text-xs font-semibold text-blue-700">
-                      Requested document
-                    </p>
-                    <p className="mt-1 text-sm font-medium text-blue-900">
-                      {selectedRequest.documentName}
-                    </p>
-                  </div>
-                )}
-
-                <div>
-                  <h4 className="text-sm font-semibold text-slate-800">
-                    Employee Message
-                  </h4>
-                  <p className="mt-2 whitespace-pre-wrap rounded-xl border border-slate-200 bg-white p-4 text-sm leading-6 text-slate-600">
-                    {selectedRequest.description}
-                  </p>
-                </div>
-
-                {selectedRequest.response && (
-                  <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-                    <p className="text-xs font-semibold text-emerald-700">
-                      Previous Manager Response
-                    </p>
-                    <p className="mt-2 whitespace-pre-wrap text-sm text-emerald-900">
-                      {selectedRequest.response}
-                    </p>
-                  </div>
-                )}
-
-                <div className="space-y-3 border-t border-slate-200 pt-5">
-                  <h4 className="text-sm font-semibold text-slate-900">
-                    Manager Response & Status
-                  </h4>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">
-                      Update Status
-                    </label>
-                    <select
-                      value={statusDraft}
-                      onChange={(event) => setStatusDraft(event.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="In Review">In Review</option>
-                      <option value="Resolved">Resolved</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-slate-700">
-                      Response to Employee
-                    </label>
-                    <textarea
-                      value={responseDraft}
-                      onChange={(event) => setResponseDraft(event.target.value)}
-                      rows={4}
-                      maxLength={1500}
-                      placeholder="Write a response or update for the employee..."
-                      className="w-full resize-y rounded-xl border border-slate-200 bg-white px-3 py-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                    />
-                  </div>
-
-                  {feedback && (
-                    <p className={`rounded-lg px-3 py-2 text-sm ${
-                      feedback.includes('successfully')
-                        ? 'bg-emerald-50 text-emerald-700'
-                        : 'bg-amber-50 text-amber-700'
-                    }`}>
-                      {feedback}
-                    </p>
+                  {/* Requested Document */}
+                  {selectedRequest.documentName && (
+                    <div className="flex items-center gap-3 rounded-xl border border-violet-400/20 bg-violet-500/[0.07] p-3.5">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-violet-300">
+                        <Icon name="fileText" className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-xs text-text-muted">
+                          Requested document
+                        </p>
+                        <p className="mt-1 break-words text-sm font-semibold text-text-primary">
+                          {selectedRequest.documentName}
+                        </p>
+                      </div>
+                    </div>
                   )}
 
-                  <button
-                    type="button"
-                    onClick={saveChanges}
-                    disabled={saving}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <Icon name="checkCircle" className="h-4 w-4" />
-                    {saving ? 'Saving...' : 'Save Response & Status'}
-                  </button>
+                  {/* Employee Message */}
+                  <div>
+                    <div className="mb-2 flex items-center justify-between gap-2">
+                      <h4 className="text-sm font-semibold text-text-primary">
+                        Employee message
+                      </h4>
+                      <span className="text-[11px] text-text-muted">
+                        Original request
+                      </span>
+                    </div>
+                    <div className="rounded-xl border border-border bg-surface p-4">
+                      <p className="whitespace-pre-wrap text-sm leading-6 text-text-secondary">
+                        {selectedRequest.description || 'No additional details provided.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Existing Response */}
+                  {selectedRequest.response && (
+                    <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/[0.06] p-4">
+                      <div className="flex items-center gap-2">
+                        <Icon name="checkCircle" className="h-4 w-4 text-emerald-300" />
+                        <p className="text-xs font-semibold text-emerald-300">
+                          Previous manager response
+                        </p>
+                      </div>
+                      <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-text-secondary">
+                        {selectedRequest.response}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Manager Action */}
+                  <div className="border-t border-border pt-5">
+                    <div className="mb-4">
+                      <h4 className="text-sm font-semibold text-text-primary">
+                        Your response
+                      </h4>
+                      <p className="mt-1 text-xs text-text-muted">
+                        Update the request status and communicate with the employee.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <label className="mb-2 block text-xs font-semibold text-text-secondary">
+                          Request status
+                        </label>
+
+                        <select
+                          value={statusDraft}
+                          onChange={(event) => setStatusDraft(event.target.value)}
+                          className="w-full rounded-xl border border-border bg-surface px-3 py-3 text-sm text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="In Review">In Review</option>
+                          <option value="Resolved">Resolved</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-xs font-semibold text-text-secondary">
+                          Message to employee
+                        </label>
+
+                        <textarea
+                          value={responseDraft}
+                          onChange={(event) => setResponseDraft(event.target.value)}
+                          rows={4}
+                          maxLength={1500}
+                          placeholder="Write a helpful response or explain the next steps..."
+                          className="w-full resize-y rounded-xl border border-border bg-surface px-3 py-3 text-sm leading-6 text-text-primary outline-none transition placeholder:text-text-faint focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                        />
+                        <p className="mt-1.5 text-right text-[11px] text-text-muted">
+                          {responseDraft.length}/1500
+                        </p>
+                      </div>
+
+                      {feedback && (
+                        <div className={`flex items-start gap-2 rounded-xl border px-3 py-3 text-sm ${
+                          feedback.includes('successfully')
+                            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+                            : 'border-amber-500/20 bg-amber-500/10 text-amber-300'
+                        }`}>
+                          <Icon
+                            name={feedback.includes('successfully') ? 'checkCircle' : 'alert'}
+                            className="mt-0.5 h-4 w-4 shrink-0"
+                          />
+                          {feedback}
+                        </div>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={saveChanges}
+                        disabled={saving}
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-violet-950/20 transition hover:bg-violet-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400/50 disabled:cursor-not-allowed disabled:opacity-60"
+                      >
+                        <Icon name="send" className="h-4 w-4" />
+                        {saving ? 'Saving changes...' : 'Save Response & Update'}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
-          </div>
+          </section>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-5">
-        <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
-            <Icon name="lock" className="h-5 w-5" />
-          </span>
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900">
-              Secure Project Support
-            </h3>
-            <p className="mt-1 text-sm leading-6 text-slate-600">
-              Employee requests, manager responses and status updates are
-              stored in the KnowFlow database and retrieved through the
-              authenticated backend.
-            </p>
-          </div>
+      {/* Privacy Note */}
+      <div className="flex items-start gap-3 rounded-2xl border border-border bg-surface-raised px-4 py-4">
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-violet-500/10 text-violet-300">
+          <Icon name="shieldCheck" className="h-4 w-4" />
+        </span>
+        <div>
+          <h4 className="text-sm font-semibold text-text-primary">
+            Secure Project Support
+          </h4>
+          <p className="mt-1 text-xs leading-5 text-text-muted">
+            Employee requests, manager responses and status updates are stored
+            in KnowFlow and retrieved through the authenticated backend.
+          </p>
         </div>
       </div>
     </div>

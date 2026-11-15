@@ -19,8 +19,12 @@ import KnowledgeInsightsPage from './pages/KnowledgeInsightsPage'
 import KnowledgeGraphPage from './pages/KnowledgeGraphPage'
 import EmployeeKnowledgeGraphPage from './pages/EmployeeKnowledgeGraphPage'
 import EmployeeKnowledgeInsightsPage from './pages/EmployeeKnowledgeInsightsPage'
+import EmployeeKnowledgePortfolioPage from './pages/EmployeeKnowledgePortfolioPage'
+import ContributionAnalyticsPage from './pages/ContributionAnalyticsPage'
+import EmployeeReportsAnalyticsPage from './pages/EmployeeReportsAnalyticsPage'
 import MyHandoverPage from './pages/MyHandoverPage'
 import PlannedFeaturePage from './pages/PlannedFeaturePage'
+import ReportsAnalyticsPage from './pages/ReportsAnalyticsPage'
 import LoginPage from './pages/LoginPage'
 import ProjectDetailsPage from './pages/ProjectDetailsPage'
 import ProjectsPage from './pages/ProjectsPage'
@@ -31,6 +35,7 @@ import ManagerNotificationsPage from './pages/ManagerNotificationsPage'
 import MyDocumentsPage from './pages/MyDocumentsPage'
 import RequestsSupportPage from './pages/RequestsSupportPage'
 import ManagerRequestsSupportPage from './pages/ManagerRequestsSupportPage'
+import AuditHistoryPage from './pages/AuditHistoryPage'
 
 const PAGES = {
   dashboard: DashboardPage,
@@ -44,17 +49,17 @@ const PAGES = {
   'requests-support': RequestsSupportPage,
   'employee-knowledge-graph': EmployeeKnowledgeGraphPage,
   'employee-knowledge-insights': EmployeeKnowledgeInsightsPage,
+  'contribution-analytics': ContributionAnalyticsPage,
+
+  // Other employee features
+  'employee-ai-assistant': PlannedFeaturePage,
+  'employee-ai-podcast': PlannedFeaturePage,
+  'knowledge-portfolio': EmployeeKnowledgePortfolioPage,
+  'employee-reports-analytics': EmployeeReportsAnalyticsPage,
 
   // Manager workspace
   'manager-notifications': ManagerNotificationsPage,
   'manager-requests-support': ManagerRequestsSupportPage,
-
-  // Employee features planned for Round 3
-  'employee-ai-assistant': PlannedFeaturePage,
-  'employee-ai-podcast': PlannedFeaturePage,
-  'contribution-analytics': PlannedFeaturePage,
-  'knowledge-portfolio': PlannedFeaturePage,
-  'employee-reports-analytics': PlannedFeaturePage,
 
   // Project management
   'create-project': CreateProjectPage,
@@ -69,9 +74,9 @@ const PAGES = {
   'knowledge-graph': KnowledgeGraphPage,
   review: HandoverReviewPage,
 
-  // Manager features planned for Round 3
-  'audit-history': PlannedFeaturePage,
-  'reports-analytics': PlannedFeaturePage,
+  // Manager features
+  'audit-history': AuditHistoryPage,
+  'reports-analytics': ReportsAnalyticsPage,
 }
 
 function AppRoutes() {

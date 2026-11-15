@@ -10,10 +10,10 @@ const CATEGORIES = [
     subtitle: 'People contributing to the project',
     icon: 'users',
     color: 'violet',
-    iconColor: 'text-violet-600',
-    iconBg: 'bg-violet-100',
-    headerBg: 'bg-violet-50',
-    dot: 'bg-violet-500',
+    iconColor: 'text-violet-300',
+    iconBg: 'bg-violet-500/15',
+    headerBg: 'bg-violet-500/10',
+    dot: 'bg-violet-400',
   },
   {
     type: 'journal',
@@ -21,10 +21,10 @@ const CATEGORIES = [
     subtitle: 'Daily work and activities',
     icon: 'bookOpen',
     color: 'cyan',
-    iconColor: 'text-cyan-600',
-    iconBg: 'bg-cyan-100',
-    headerBg: 'bg-cyan-50',
-    dot: 'bg-cyan-500',
+    iconColor: 'text-cyan-300',
+    iconBg: 'bg-cyan-500/15',
+    headerBg: 'bg-cyan-500/10',
+    dot: 'bg-cyan-400',
   },
   {
     type: 'knowledge',
@@ -32,10 +32,10 @@ const CATEGORIES = [
     subtitle: 'Captured project information',
     icon: 'brain',
     color: 'blue',
-    iconColor: 'text-blue-600',
-    iconBg: 'bg-blue-100',
-    headerBg: 'bg-blue-50',
-    dot: 'bg-blue-500',
+    iconColor: 'text-indigo-300',
+    iconBg: 'bg-indigo-500/15',
+    headerBg: 'bg-indigo-500/10',
+    dot: 'bg-indigo-400',
   },
   {
     type: 'document',
@@ -43,10 +43,10 @@ const CATEGORIES = [
     subtitle: 'Supporting project sources',
     icon: 'fileText',
     color: 'emerald',
-    iconColor: 'text-emerald-600',
-    iconBg: 'bg-emerald-100',
-    headerBg: 'bg-emerald-50',
-    dot: 'bg-emerald-500',
+    iconColor: 'text-emerald-300',
+    iconBg: 'bg-emerald-500/15',
+    headerBg: 'bg-emerald-500/10',
+    dot: 'bg-emerald-400',
   },
 ]
 
@@ -143,11 +143,11 @@ function createGraph(project) {
 
 function MetricCard({ label, value, icon, iconBg, iconColor }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+    <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:border-violet-500/30 hover:shadow-xl hover:shadow-black/20">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-slate-500">{label}</p>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+          <p className="text-sm font-medium text-text-muted">{label}</p>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             {value}
           </p>
         </div>
@@ -167,8 +167,8 @@ function KnowledgeNode({ node, category, connectionCount, selected, onClick }) {
       onClick={onClick}
       className={`group w-full rounded-xl border p-3.5 text-left transition-all duration-200 ${
         selected
-          ? 'border-blue-400 bg-blue-50 shadow-md ring-2 ring-blue-100'
-          : 'border-slate-200 bg-white hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md'
+          ? 'border-violet-500/50 bg-violet-500/10 shadow-md ring-2 ring-violet-500/20'
+          : 'border-border bg-surface-raised hover:-translate-y-0.5 hover:border-violet-500/30 hover:bg-surface-hover hover:shadow-lg hover:shadow-black/10'
       }`}
     >
       <div className="flex items-start gap-3">
@@ -177,10 +177,10 @@ function KnowledgeNode({ node, category, connectionCount, selected, onClick }) {
         </span>
 
         <div className="min-w-0 flex-1">
-          <p className="break-words text-sm font-semibold leading-5 text-slate-800">
+          <p className="break-words text-sm font-semibold leading-5 text-text-primary">
             {node.label}
           </p>
-          <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">
+          <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-muted">
             {node.subtitle}
           </p>
         </div>
@@ -189,19 +189,19 @@ function KnowledgeNode({ node, category, connectionCount, selected, onClick }) {
           name="chevron-right"
           className={`mt-1 h-4 w-4 shrink-0 transition ${
             selected
-              ? 'text-blue-600'
-              : 'text-slate-300 group-hover:text-slate-500'
+              ? 'text-violet-300'
+              : 'text-text-muted group-hover:text-text-secondary'
           }`}
         />
       </div>
 
-      <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
-        <span className="flex items-center gap-1.5 text-xs text-slate-400">
+      <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
+        <span className="flex items-center gap-1.5 text-xs text-text-muted">
           <span className={`h-1.5 w-1.5 rounded-full ${category.dot}`} />
           {category.title.slice(0, -1)}
         </span>
 
-        <span className="rounded-md bg-slate-50 px-2 py-1 text-[11px] font-medium text-slate-500">
+        <span className="rounded-md bg-surface-hover px-2 py-1 text-[11px] font-medium text-text-secondary">
           {connectionCount} {connectionCount === 1 ? 'connection' : 'connections'}
         </span>
       </div>
@@ -217,23 +217,23 @@ function CategoryColumn({
   onSelect,
 }) {
   return (
-    <div className="min-w-[250px] flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/70">
-      <div className={`border-b border-slate-200 px-4 py-4 ${category.headerBg}`}>
+    <div className="min-w-[250px] flex-1 overflow-hidden rounded-2xl border border-border bg-surface">
+      <div className={`border-b border-border px-4 py-4 ${category.headerBg}`}>
         <div className="flex items-center gap-3">
-          <span className={`flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ${category.iconColor}`}>
+          <span className={`flex h-10 w-10 items-center justify-center rounded-xl bg-surface-raised shadow-sm ${category.iconColor}`}>
             <Icon name={category.icon} className="h-5 w-5" />
           </span>
 
           <div className="min-w-0 flex-1">
-            <h4 className="text-sm font-bold text-slate-800">
+            <h4 className="text-sm font-bold text-text-primary">
               {category.title}
             </h4>
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-xs text-text-muted">
               {category.subtitle}
             </p>
           </div>
 
-          <span className="rounded-lg bg-white px-2.5 py-1 text-xs font-bold text-slate-700 shadow-sm">
+          <span className="rounded-lg border border-border bg-surface-raised px-2.5 py-1 text-xs font-bold text-text-primary shadow-sm">
             {nodes.length}
           </span>
         </div>
@@ -241,14 +241,14 @@ function CategoryColumn({
 
       <div className="min-h-[250px] space-y-3 p-3">
         {nodes.length === 0 ? (
-          <div className="flex min-h-[220px] flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white/70 px-4 text-center">
+          <div className="flex min-h-[220px] flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface-raised/70 px-4 text-center">
             <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${category.iconBg} ${category.iconColor}`}>
               <Icon name={category.icon} className="h-5 w-5" />
             </span>
-            <p className="mt-3 text-sm font-medium text-slate-600">
+            <p className="mt-3 text-sm font-medium text-text-secondary">
               No records yet
             </p>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-text-muted">
               Available records will appear here.
             </p>
           </div>
@@ -310,29 +310,29 @@ export default function EmployeeKnowledgeGraphPage() {
       label: 'Team Members',
       value: project?.members?.length || 0,
       icon: 'users',
-      iconBg: 'bg-violet-50',
-      iconColor: 'text-violet-600',
+      iconBg: 'bg-violet-500/15',
+      iconColor: 'text-violet-300',
     },
     {
       label: 'Work Journals',
       value: project?.journalEntries?.length || 0,
       icon: 'bookOpen',
-      iconBg: 'bg-cyan-50',
-      iconColor: 'text-cyan-600',
+      iconBg: 'bg-cyan-500/15',
+      iconColor: 'text-cyan-300',
     },
     {
       label: 'Knowledge Items',
       value: project?.knowledge?.items?.length || 0,
       icon: 'brain',
-      iconBg: 'bg-blue-50',
-      iconColor: 'text-blue-600',
+      iconBg: 'bg-indigo-500/15',
+      iconColor: 'text-indigo-300',
     },
     {
       label: 'Documents',
       value: project?.documents?.length || 0,
       icon: 'fileText',
-      iconBg: 'bg-emerald-50',
-      iconColor: 'text-emerald-600',
+      iconBg: 'bg-emerald-500/15',
+      iconColor: 'text-emerald-300',
     },
   ]
 
@@ -340,34 +340,34 @@ export default function EmployeeKnowledgeGraphPage() {
     <div className="space-y-7">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <div className="flex items-center gap-2 text-sm font-medium text-blue-600">
+          <div className="flex items-center gap-2 text-sm font-medium text-violet-300">
             <Icon name="network" className="h-4 w-4" />
             Knowledge & Intelligence
           </div>
 
-          <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">
+          <h2 className="mt-2 text-2xl font-bold tracking-tight text-text-primary">
             Knowledge Graph
           </h2>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
             Discover how people, daily work, project knowledge and documents
             are connected across your project.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start rounded-xl border border-blue-100 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-700">
+        <div className="flex items-center gap-2 self-start rounded-xl border border-violet-500/25 bg-violet-500/10 px-4 py-2.5 text-sm font-semibold text-violet-300">
           <Icon name="eye" className="h-4 w-4" />
           Read-only access
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-text-primary">
               Project Workspace
             </h3>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-text-muted">
               Select a project to explore its knowledge map.
             </p>
           </div>
@@ -378,7 +378,7 @@ export default function EmployeeKnowledgeGraphPage() {
               setSelectedProject(event.target.value)
               setSelectedNode(null)
             }}
-            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 sm:w-72"
+            className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm font-medium text-text-primary outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 sm:w-72"
           >
             {projects.length === 0 && (
               <option value="">No projects available</option>
@@ -394,25 +394,25 @@ export default function EmployeeKnowledgeGraphPage() {
       </div>
 
       {project && (
-        <div className="rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50 via-white to-violet-50 p-5">
+        <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-r from-[#17132F] via-surface-raised to-[#10242F] p-5">
           <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div className="flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-blue-600 shadow-sm">
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-violet-500/20 bg-violet-500/10 text-violet-300 shadow-sm">
                 <Icon name="folder" className="h-6 w-6" />
               </span>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-blue-600">
+                <p className="text-xs font-medium uppercase tracking-wider text-violet-300">
                   Current project
                 </p>
-                <h3 className="mt-1 text-lg font-bold text-slate-900">
+                <h3 className="mt-1 text-lg font-bold text-text-primary">
                   {project.name}
                 </h3>
               </div>
             </div>
 
-            <div className="rounded-xl border border-blue-100 bg-white/80 px-4 py-2.5">
-              <p className="text-xs text-slate-500">Total records</p>
-              <p className="mt-0.5 text-xl font-bold text-slate-900">
+            <div className="rounded-xl border border-border bg-surface-raised/80 px-4 py-2.5">
+              <p className="text-xs text-text-muted">Total records</p>
+              <p className="mt-0.5 text-xl font-bold text-text-primary">
                 {graph.nodes.length}
               </p>
             </div>
@@ -427,42 +427,42 @@ export default function EmployeeKnowledgeGraphPage() {
       </div>
 
       {!project ? (
-        <div className="rounded-2xl border border-slate-200 bg-white px-5 py-16 text-center shadow-sm">
-          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+        <div className="rounded-2xl border border-border bg-surface-raised px-5 py-16 text-center shadow-lg shadow-black/10">
+          <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-hover text-text-muted">
             <Icon name="folderOpen" className="h-7 w-7" />
           </span>
-          <h3 className="mt-4 font-semibold text-slate-900">
+          <h3 className="mt-4 font-semibold text-text-primary">
             No project available
           </h3>
-          <p className="mt-2 text-sm text-slate-500">
+          <p className="mt-2 text-sm text-text-muted">
             Projects assigned to you will appear here.
           </p>
         </div>
       ) : (
         <>
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex flex-col justify-between gap-3 border-b border-slate-200 p-5 sm:flex-row sm:items-center">
+          <div className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-lg shadow-black/10">
+            <div className="flex flex-col justify-between gap-3 border-b border-border p-5 sm:flex-row sm:items-center">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-text-primary">
                   Project Relationship Map
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-text-muted">
                   Explore the four categories of connected project information.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2 self-start rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-600">
+              <div className="flex items-center gap-2 self-start rounded-lg border border-border bg-surface px-3 py-2 text-xs font-medium text-text-secondary">
                 <Icon name="mousePointerClick" className="h-4 w-4" />
                 Select a record to explore
               </div>
             </div>
 
-            <div className="border-b border-slate-100 bg-slate-50/70 px-5 py-3">
+            <div className="border-b border-border bg-surface px-5 py-3">
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                 {CATEGORIES.map((category) => (
                   <div key={category.type} className="flex items-center gap-2">
                     <span className={`h-2.5 w-2.5 rounded-full ${category.dot}`} />
-                    <span className="text-xs font-medium text-slate-600">
+                    <span className="text-xs font-medium text-text-secondary">
                       {category.title}
                     </span>
                   </div>
@@ -485,12 +485,12 @@ export default function EmployeeKnowledgeGraphPage() {
               </div>
             </div>
 
-            <div className="border-t border-slate-100 bg-slate-50 px-5 py-3">
+            <div className="border-t border-border bg-surface px-5 py-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-text-muted">
                   Showing {graph.nodes.length} project records across four categories.
                 </p>
-                <p className="text-xs font-medium text-slate-500">
+                <p className="text-xs font-medium text-text-secondary">
                   {graph.edges.length} identified relationships
                 </p>
               </div>
@@ -498,17 +498,17 @@ export default function EmployeeKnowledgeGraphPage() {
           </div>
 
           {selectedDetails && (
-            <div className="overflow-hidden rounded-2xl border border-blue-200 bg-white shadow-sm">
-              <div className="flex items-center justify-between gap-3 border-b border-blue-100 bg-blue-50/70 px-5 py-4">
+            <div className="overflow-hidden rounded-2xl border border-violet-500/30 bg-surface-raised shadow-lg shadow-black/10">
+              <div className="flex items-center justify-between gap-3 border-b border-border bg-violet-500/10 px-5 py-4">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white text-blue-600 shadow-sm">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg border border-violet-500/20 bg-surface-raised text-violet-300 shadow-sm">
                     <Icon name="info" className="h-5 w-5" />
                   </span>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900">
+                    <h3 className="text-sm font-bold text-text-primary">
                       Record Details
                     </h3>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-text-muted">
                       Explore the selected project record
                     </p>
                   </div>
@@ -517,7 +517,7 @@ export default function EmployeeKnowledgeGraphPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedNode(null)}
-                  className="rounded-lg p-2 text-slate-500 transition hover:bg-white hover:text-slate-800"
+                  className="rounded-lg p-2 text-text-muted transition hover:bg-surface-hover hover:text-text-primary"
                   aria-label="Close details"
                 >
                   <Icon name="x" className="h-4 w-4" />
@@ -527,22 +527,22 @@ export default function EmployeeKnowledgeGraphPage() {
               <div className="p-5">
                 <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                   <div>
-                    <span className="rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                    <span className="rounded-lg border border-violet-500/20 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-300">
                       {CATEGORIES.find(
                         (category) => category.type === selectedDetails.type
                       )?.title}
                     </span>
-                    <h4 className="mt-3 text-lg font-bold text-slate-900">
+                    <h4 className="mt-3 text-lg font-bold text-text-primary">
                       {selectedDetails.label}
                     </h4>
-                    <p className="mt-1 text-sm text-slate-500">
+                    <p className="mt-1 text-sm text-text-muted">
                       {selectedDetails.subtitle}
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                    <p className="text-xs text-slate-500">Connections</p>
-                    <p className="mt-1 text-xl font-bold text-slate-900">
+                  <div className="rounded-xl border border-border bg-surface px-4 py-3">
+                    <p className="text-xs text-text-muted">Connections</p>
+                    <p className="mt-1 text-xl font-bold text-text-primary">
                       {graph.edges.filter(
                         (edge) =>
                           edge.from === selectedDetails.id ||
@@ -552,11 +552,11 @@ export default function EmployeeKnowledgeGraphPage() {
                   </div>
                 </div>
 
-                <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <div className="mt-5 rounded-xl border border-border bg-surface p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                     Available record information
                   </p>
-                  <pre className="mt-3 max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs leading-6 text-slate-600">
+                  <pre className="mt-3 max-h-64 overflow-auto whitespace-pre-wrap break-words text-xs leading-6 text-text-secondary">
                     {JSON.stringify(selectedDetails.data, null, 2)}
                   </pre>
                 </div>
@@ -566,17 +566,17 @@ export default function EmployeeKnowledgeGraphPage() {
         </>
       )}
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5">
+      <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-5">
         <div className="flex items-start gap-3">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-emerald-300">
             <Icon name="shieldCheck" className="h-5 w-5" />
           </span>
 
           <div>
-            <h3 className="text-sm font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-text-primary">
               Project Knowledge Access
             </h3>
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <p className="mt-1 text-sm leading-6 text-text-secondary">
               This is a read-only view of the project records currently
               available in KnowFlow. Employees can explore the information
               without changing project knowledge or its relationships.

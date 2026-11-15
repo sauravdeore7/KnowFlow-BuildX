@@ -15,12 +15,11 @@ export const NAV_ITEMS = [
   { key: 'employee-knowledge-graph', label: 'Knowledge Graph', icon: 'network', roles: ['employee'], section: 'collaboration' },
   { key: 'employee-knowledge-insights', label: 'Knowledge Insights', icon: 'brain', roles: ['employee'], section: 'collaboration' },
 
-  // Employee features planned for Round 3
-  { key: 'employee-ai-assistant', label: 'AI Knowledge Assistant', icon: 'sparkles', roles: ['employee'], section: 'collaboration', badge: 'Round 3' },
-  { key: 'employee-ai-podcast', label: 'AI Knowledge Podcast', icon: 'headphones', roles: ['employee'], section: 'collaboration', badge: 'Round 3' },
-  { key: 'contribution-analytics', label: 'Contribution Analytics', icon: 'listChecks', roles: ['employee'], section: 'collaboration', badge: 'Round 3' },
-  { key: 'knowledge-portfolio', label: 'Knowledge Portfolio', icon: 'award', roles: ['employee'], section: 'collaboration', badge: 'Round 3' },
-  { key: 'employee-reports-analytics', label: 'Reports & Analytics', icon: 'fileText', roles: ['employee'], section: 'collaboration', badge: 'Round 3' },
+  { key: 'employee-ai-assistant', label: 'AI Knowledge Assistant', icon: 'sparkles', roles: ['employee'], section: 'collaboration' },
+  { key: 'employee-ai-podcast', label: 'AI Knowledge Podcast', icon: 'headphones', roles: ['employee'], section: 'collaboration' },
+  { key: 'contribution-analytics', label: 'Contribution Analytics', icon: 'listChecks', roles: ['employee'], section: 'collaboration' },
+  { key: 'knowledge-portfolio', label: 'Knowledge Portfolio', icon: 'award', roles: ['employee'], section: 'collaboration' },
+  { key: 'employee-reports-analytics', label: 'Reports & Analytics', icon: 'fileText', roles: ['employee'], section: 'collaboration' },
 
   // Manager workspace
   { key: 'manager-notifications', label: 'Notifications', icon: 'bell', roles: ['manager'], section: 'workspace' },
@@ -31,9 +30,9 @@ export const NAV_ITEMS = [
   { key: 'review', label: 'Handover Review', icon: 'clipboard', roles: ['manager'], section: 'workspace' },
   { key: 'manager-requests-support', label: 'Requests & Support', icon: 'clipboard', roles: ['manager'], section: 'workspace' },
 
-  // Manager governance — Round 3
-  { key: 'audit-history', label: 'Audit & Version History', icon: 'clock', roles: ['manager'], section: 'governance', badge: 'Round 3' },
-  { key: 'reports-analytics', label: 'Reports & Analytics', icon: 'fileText', roles: ['manager'], section: 'governance', badge: 'Round 3' },
+  // Manager governance
+  { key: 'audit-history', label: 'Audit & Version History', icon: 'clock', roles: ['manager'], section: 'governance' },
+  { key: 'reports-analytics', label: 'Reports & Analytics', icon: 'fileText', roles: ['manager'], section: 'governance' },
 ]
 
 // Pages that are not in the sidebar highlight a parent item instead.
@@ -99,8 +98,14 @@ export const PAGE_META = {
     subtitle: 'Review and manage requests submitted by project employees.',
   },
 
-  'audit-history': { title: 'Audit & Version History', subtitle: 'Planned for Round 3.' },
-  'reports-analytics': { title: 'Reports & Analytics', subtitle: 'Planned for Round 3.' },
+  'audit-history': {
+    title: 'Audit & Version History',
+    subtitle: 'Track project activity, document changes and knowledge history.',
+  },
+  'reports-analytics': {
+    title: 'Reports & Analytics',
+    subtitle: 'Understand project knowledge health and handover performance.',
+  },
 
   'project-journal': {
     title: 'Journal History',

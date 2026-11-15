@@ -4,29 +4,29 @@ import { useApp } from '../hooks/useApp'
 
 const NODE_STYLES = {
   member: {
-    color: '#7c3aed',
-    light: '#f3e8ff',
+    color: '#A78BFA',
+    light: '#251B40',
     label: 'Team Members',
     icon: '👤',
     x: 30,
   },
   journal: {
-    color: '#0891b2',
-    light: '#cffafe',
+    color: '#22D3EE',
+    light: '#102A36',
     label: 'Journal Entries',
     icon: '📓',
     x: 350,
   },
   knowledge: {
-    color: '#2563eb',
-    light: '#dbeafe',
+    color: '#818CF8',
+    light: '#1D2348',
     label: 'Knowledge Findings',
     icon: '🧠',
     x: 670,
   },
   document: {
-    color: '#059669',
-    light: '#d1fae5',
+    color: '#34D399',
+    light: '#123329',
     label: 'Project Documents',
     icon: '📄',
     x: 990,
@@ -150,7 +150,7 @@ function createGraph(project) {
       from: `member-${author.id}`,
       to: `journal-${journal.id}`,
       label: 'AUTHORED',
-      color: '#8b5cf6',
+      color: '#A78BFA',
     })
   })
 
@@ -181,7 +181,7 @@ function createGraph(project) {
       from: sourceNode,
       to: `knowledge-${finding.id}`,
       label: 'SOURCE',
-      color: '#3b82f6',
+      color: '#818CF8',
     })
   })
 
@@ -226,11 +226,11 @@ function GraphNode({ node, selected, onSelect }) {
         width={NODE_WIDTH}
         height={NODE_HEIGHT}
         rx="13"
-        fill={selected ? style.light : '#ffffff'}
-        stroke={selected ? style.color : '#e2e8f0'}
+        fill={selected ? style.light : '#12132B'}
+        stroke={selected ? style.color : '#252640'}
         strokeWidth={selected ? 2.5 : 1.4}
         style={{
-          filter: selected ? 'drop-shadow(0px 5px 9px #94a3b855)' : 'none',
+          filter: selected ? 'drop-shadow(0px 5px 9px #00000066)' : 'none',
           transition: 'all 0.2s ease',
         }}
       />
@@ -261,7 +261,7 @@ function GraphNode({ node, selected, onSelect }) {
       <text
         x={node.x + 45}
         y={node.y + 29}
-        fill="#1e293b"
+        fill="#F5F5FF"
         fontSize="12"
         fontWeight="700"
       >
@@ -292,11 +292,11 @@ function GraphNode({ node, selected, onSelect }) {
 
 function DetailRow({ label, value }) {
   return (
-    <div className="border-b border-slate-100 py-3 last:border-0">
-      <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+    <div className="border-b border-border py-3 last:border-0">
+      <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
         {label}
       </p>
-      <p className="mt-1 break-words text-sm font-medium leading-6 text-slate-700">
+      <p className="mt-1 break-words text-sm font-medium leading-6 text-text-secondary">
         {getText(value)}
       </p>
     </div>
@@ -306,12 +306,12 @@ function DetailRow({ label, value }) {
 function NodeDetails({ node, project }) {
   if (!node) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center">
+      <div className="rounded-xl border border-dashed border-border bg-surface p-6 text-center">
         <div className="text-3xl">🔎</div>
-        <p className="mt-2 text-sm font-semibold text-slate-700">
+        <p className="mt-2 text-sm font-semibold text-text-primary">
           Explore a knowledge node
         </p>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-text-muted">
           Select any node in the graph to inspect its actual project record.
         </p>
       </div>
@@ -322,7 +322,7 @@ function NodeDetails({ node, project }) {
   const style = NODE_STYLES[node.type]
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10">
       <div className="flex items-start gap-3">
         <div
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg"
@@ -339,7 +339,7 @@ function NodeDetails({ node, project }) {
             {style.label}
           </span>
 
-          <h3 className="mt-1 break-words font-bold text-slate-900">
+          <h3 className="mt-1 break-words font-bold text-text-primary">
             {node.label}
           </h3>
         </div>
@@ -480,11 +480,11 @@ export default function KnowledgeGraphPage() {
 
   if (!projects.length) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
-        <p className="font-semibold text-slate-800">
+      <div className="rounded-xl border border-border bg-surface-raised p-8 text-center">
+        <p className="font-semibold text-text-primary">
           No projects available
         </p>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-1 text-sm text-text-muted">
           Create a project before exploring its Knowledge Graph.
         </p>
       </div>
@@ -495,29 +495,29 @@ export default function KnowledgeGraphPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 className="text-2xl font-bold tracking-tight text-text-primary">
             Knowledge Graph
           </h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-muted">
             Explore how people, project activity, knowledge and documents connect.
           </p>
         </div>
 
-        <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+        <span className="rounded-full border border-violet-500/25 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-300">
           Manager Workspace
         </span>
       </div>
 
-      <section className="rounded-xl border border-blue-200 bg-blue-50 p-5 shadow-sm">
-        <h3 className="font-bold text-blue-950">Select Project</h3>
-        <p className="mt-1 text-sm text-blue-800">
+      <section className="rounded-xl border border-violet-500/20 bg-gradient-to-br from-surface-raised via-surface to-[#17132F] p-5 shadow-lg shadow-black/10">
+        <h3 className="font-bold text-text-primary">Select Project</h3>
+        <p className="mt-1 text-sm text-text-muted">
           Explore the relationships formed from the project's recorded information.
         </p>
 
         <select
           value={selectedProjectId}
           onChange={(event) => selectProject(event.target.value)}
-          className="mt-4 w-full rounded-lg border border-blue-200 bg-white px-4 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+          className="mt-4 w-full rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
         >
           <option value="">Choose a project...</option>
           {projects.map((item) => (
@@ -529,32 +529,32 @@ export default function KnowledgeGraphPage() {
       </section>
 
       {!project ? (
-        <div className="rounded-xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center">
+        <div className="rounded-xl border border-dashed border-border bg-surface-raised px-5 py-12 text-center">
           <div className="text-4xl">🕸️</div>
-          <h3 className="mt-3 font-semibold text-slate-800">
+          <h3 className="mt-3 font-semibold text-text-primary">
             Select a project to explore its graph
           </h3>
-          <p className="mt-1 text-sm text-slate-500">
+          <p className="mt-1 text-sm text-text-muted">
             Its members, journals, documents and knowledge findings will appear as connected nodes.
           </p>
         </div>
       ) : (
         <>
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
+                <p className="text-xs font-semibold uppercase tracking-wide text-violet-300">
                   Project Knowledge Network
                 </p>
-                <h3 className="mt-1 text-xl font-bold text-slate-900">
+                <h3 className="mt-1 text-xl font-bold text-text-primary">
                   {project.name}
                 </h3>
-                <p className="mt-1 text-sm leading-6 text-slate-500">
+                <p className="mt-1 text-sm leading-6 text-text-muted">
                   {project.knowledge?.summary || project.description}
                 </p>
               </div>
 
-              <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-semibold text-emerald-700">
+              <span className="rounded-full bg-emerald-500/15 px-3 py-1.5 text-xs font-semibold text-emerald-300">
                 Live project records
               </span>
             </div>
@@ -564,32 +564,32 @@ export default function KnowledgeGraphPage() {
                 {
                   label: 'Team Members',
                   value: project.members?.length || 0,
-                  color: 'text-violet-700',
+                  color: 'text-violet-300',
                 },
                 {
                   label: 'Journal Entries',
                   value: project.journalEntries?.length || 0,
-                  color: 'text-cyan-700',
+                  color: 'text-cyan-300',
                 },
                 {
                   label: 'Knowledge Findings',
                   value: project.knowledge?.items?.length || 0,
-                  color: 'text-blue-700',
+                  color: 'text-indigo-300',
                 },
                 {
                   label: 'Documents',
                   value: project.documents?.length || 0,
-                  color: 'text-emerald-700',
+                  color: 'text-emerald-300',
                 },
               ].map((metric) => (
                 <div
                   key={metric.label}
-                  className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+                  className="rounded-xl border border-border bg-surface p-4"
                 >
                   <p className={`text-2xl font-bold ${metric.color}`}>
                     {metric.value}
                   </p>
-                  <p className="mt-1 text-xs font-medium text-slate-500">
+                  <p className="mt-1 text-xs font-medium text-text-muted">
                     {metric.label}
                   </p>
                 </div>
@@ -598,45 +598,45 @@ export default function KnowledgeGraphPage() {
           </section>
 
           <section className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <p className="text-2xl font-bold text-slate-900">
+            <div className="rounded-xl border border-border bg-surface-raised p-4">
+              <p className="text-2xl font-bold text-text-primary">
                 {totalNodes}
               </p>
-              <p className="mt-1 text-xs text-slate-500">Total Nodes</p>
+              <p className="mt-1 text-xs text-text-muted">Total Nodes</p>
             </div>
 
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <p className="text-2xl font-bold text-blue-700">
+            <div className="rounded-xl border border-border bg-surface-raised p-4">
+              <p className="text-2xl font-bold text-violet-300">
                 {totalConnections}
               </p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-text-muted">
                 Verified Connections
               </p>
             </div>
 
-            <div className="col-span-2 rounded-xl border border-slate-200 bg-white p-4 sm:col-span-1">
-              <p className="text-2xl font-bold text-emerald-700">
+            <div className="col-span-2 rounded-xl border border-border bg-surface-raised p-4 sm:col-span-1">
+              <p className="text-2xl font-bold text-emerald-300">
                 {visibleNodes.length}
               </p>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1 text-xs text-text-muted">
                 Currently Visible
               </p>
             </div>
           </section>
 
-          <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 p-5">
+          <section className="overflow-hidden rounded-xl border border-border bg-surface-raised shadow-lg shadow-black/10">
+            <div className="border-b border-border p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-bold text-slate-900">
+                  <h3 className="font-bold text-text-primary">
                     Interactive Relationship Map
                   </h3>
-                  <p className="mt-1 text-sm text-slate-500">
+                  <p className="mt-1 text-sm text-text-muted">
                     Search, filter and select nodes to explore project knowledge.
                   </p>
                 </div>
 
-                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                <span className="rounded-full bg-violet-500/15 px-3 py-1 text-xs font-semibold text-violet-300">
                   {visibleEdges.length} connections shown
                 </span>
               </div>
@@ -646,7 +646,7 @@ export default function KnowledgeGraphPage() {
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search members, journals, findings or documents..."
-                className="mt-4 w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="mt-4 w-full rounded-lg border border-border bg-surface px-4 py-3 text-sm text-text-primary outline-none transition placeholder:text-text-muted focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
               />
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -663,18 +663,18 @@ export default function KnowledgeGraphPage() {
                       aria-pressed={active}
                       className={`flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-semibold transition ${
                         active
-                          ? 'border-slate-300 bg-white text-slate-800 shadow-sm'
-                          : 'border-slate-200 bg-slate-50 text-slate-400'
+                          ? 'border-violet-500/30 bg-violet-500/10 text-text-primary shadow-sm'
+                          : 'border-border bg-surface text-text-muted'
                       }`}
                     >
                       <span
                         className="h-2.5 w-2.5 rounded-full"
                         style={{
-                          backgroundColor: active ? style.color : '#cbd5e1',
+                          backgroundColor: active ? style.color : '#4B4D68',
                         }}
                       />
                       {style.label}
-                      <span className="text-slate-400">{count}</span>
+                      <span className="text-text-muted">{count}</span>
                     </button>
                   )
                 })}
@@ -684,24 +684,24 @@ export default function KnowledgeGraphPage() {
             {graph.nodes.length === 0 ? (
               <div className="p-12 text-center">
                 <div className="text-4xl">🕸️</div>
-                <h3 className="mt-3 font-semibold text-slate-800">
+                <h3 className="mt-3 font-semibold text-text-primary">
                   No graph records available
                 </h3>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-text-muted">
                   Add members, journals, documents or knowledge findings to build this graph.
                 </p>
               </div>
             ) : visibleNodes.length === 0 ? (
               <div className="p-10 text-center">
-                <p className="font-semibold text-slate-800">
+                <p className="font-semibold text-text-primary">
                   No matching nodes found
                 </p>
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-text-muted">
                   Try another search term or enable more node categories.
                 </p>
               </div>
             ) : (
-              <div className="overflow-x-auto bg-slate-50 p-3 sm:p-5">
+              <div className="overflow-x-auto bg-canvas p-3 sm:p-5">
                 <svg
                   viewBox={`0 0 1320 ${graph.height}`}
                   width="1320"
@@ -716,8 +716,8 @@ export default function KnowledgeGraphPage() {
                         dx="0"
                         dy="3"
                         stdDeviation="4"
-                        floodColor="#64748b"
-                        floodOpacity="0.12"
+                        floodColor="#000000"
+                        floodOpacity="0.35"
                       />
                     </filter>
                   </defs>
@@ -729,7 +729,9 @@ export default function KnowledgeGraphPage() {
                     width="340"
                     height="90"
                     rx="18"
-                    fill="#172554"
+                    fill="#17152F"
+                    stroke="#49406F"
+                    strokeWidth="1.5"
                     filter="url(#graph-shadow)"
                   />
 
@@ -737,7 +739,7 @@ export default function KnowledgeGraphPage() {
                     x="660"
                     y="69"
                     textAnchor="middle"
-                    fill="#bfdbfe"
+                    fill="#C4B5FD"
                     fontSize="11"
                     fontWeight="700"
                     letterSpacing="2"
@@ -749,7 +751,7 @@ export default function KnowledgeGraphPage() {
                     x="660"
                     y="96"
                     textAnchor="middle"
-                    fill="white"
+                    fill="#F5F5FF"
                     fontSize="15"
                     fontWeight="700"
                   >
@@ -771,7 +773,7 @@ export default function KnowledgeGraphPage() {
                           stroke={style.color}
                           strokeWidth="2"
                           strokeDasharray="5 6"
-                          opacity="0.45"
+                          opacity="0.55"
                         />
 
                         <circle
@@ -810,7 +812,7 @@ export default function KnowledgeGraphPage() {
                         stroke={NODE_STYLES[node.type].color}
                         strokeWidth="1"
                         strokeDasharray="3 7"
-                        opacity="0.15"
+                        opacity="0.2"
                       />
                     )
                   })}
@@ -840,7 +842,7 @@ export default function KnowledgeGraphPage() {
                           fill="none"
                           stroke={edge.color}
                           strokeWidth="2.5"
-                          opacity="0.75"
+                          opacity="0.85"
                         />
 
                         <circle
@@ -868,9 +870,9 @@ export default function KnowledgeGraphPage() {
               </div>
             )}
 
-            <div className="border-t border-slate-200 bg-white p-4">
-              <p className="text-xs leading-6 text-slate-500">
-                <span className="font-semibold text-slate-700">
+            <div className="border-t border-border bg-surface-raised p-4">
+              <p className="text-xs leading-6 text-text-muted">
+                <span className="font-semibold text-text-secondary">
                   Relationship guide:
                 </span>
                 {' '}Dashed lines represent project grouping. Solid purple lines
@@ -886,48 +888,48 @@ export default function KnowledgeGraphPage() {
               project={project}
             />
 
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h3 className="font-bold text-slate-900">
+            <div className="rounded-xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10">
+              <h3 className="font-bold text-text-primary">
                 Relationship Summary
               </h3>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-text-muted">
                 Verified connections derived from existing project records.
               </p>
 
               <div className="mt-4 space-y-3">
-                <div className="flex items-center justify-between rounded-lg bg-violet-50 p-4">
+                <div className="flex items-center justify-between rounded-lg border border-violet-500/20 bg-violet-500/10 p-4">
                   <div>
-                    <p className="text-sm font-semibold text-violet-900">
+                    <p className="text-sm font-semibold text-violet-300">
                       Journal Authorship
                     </p>
-                    <p className="mt-1 text-xs text-violet-700">
+                    <p className="mt-1 text-xs text-text-muted">
                       Journals matched to their recorded authors
                     </p>
                   </div>
-                  <span className="text-xl font-bold text-violet-700">
+                  <span className="text-xl font-bold text-violet-300">
                     {graph.edges.filter((edge) => edge.label === 'AUTHORED').length}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between rounded-lg bg-blue-50 p-4">
+                <div className="flex items-center justify-between rounded-lg border border-indigo-500/20 bg-indigo-500/10 p-4">
                   <div>
-                    <p className="text-sm font-semibold text-blue-900">
+                    <p className="text-sm font-semibold text-indigo-300">
                       Source Connections
                     </p>
-                    <p className="mt-1 text-xs text-blue-700">
+                    <p className="mt-1 text-xs text-text-muted">
                       Findings matched to source records
                     </p>
                   </div>
-                  <span className="text-xl font-bold text-blue-700">
+                  <span className="text-xl font-bold text-indigo-300">
                     {graph.edges.filter((edge) => edge.label === 'SOURCE').length}
                   </span>
                 </div>
 
-                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-sm font-semibold text-slate-800">
+                <div className="rounded-lg border border-border bg-surface p-4">
+                  <p className="text-sm font-semibold text-text-primary">
                     Data integrity
                   </p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">
+                  <p className="mt-1 text-xs leading-5 text-text-muted">
                     Connections are displayed only when their source IDs or
                     recorded author names match actual project records.
                     Unmatched relationships are not fabricated.
@@ -939,11 +941,11 @@ export default function KnowledgeGraphPage() {
         </>
       )}
 
-      <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
-        <p className="text-sm font-semibold text-blue-900">
+      <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4">
+        <p className="text-sm font-semibold text-violet-300">
           About this Knowledge Graph
         </p>
-        <p className="mt-1 text-sm leading-6 text-blue-800">
+        <p className="mt-1 text-sm leading-6 text-text-secondary">
           The graph visualizes actual project members, journal entries,
           extracted knowledge findings and uploaded documents. Relationships
           are derived from recorded authorship and source references.

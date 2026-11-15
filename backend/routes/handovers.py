@@ -1,10 +1,9 @@
-
 from datetime import datetime, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from supabase import create_client
 
 from config import SUPABASE_URL, SUPABASE_KEY
@@ -12,6 +11,11 @@ from config import SUPABASE_URL, SUPABASE_KEY
 
 router = APIRouter(prefix="/handovers", tags=["Handovers"])
 security = HTTPBearer()
+
+
+class CreateHandoverRequest(BaseModel):
+    project_id: str
+    comments: Optional[str] = Field(default=None, max_length=2000)
 
 
 class ConfirmationRequest(BaseModel):
@@ -128,6 +132,84 @@ def update_handover(client, handover_id, changes):
     return response.data[0]
 
 
+# --------------------------------------------------
+# CREATE HANDOVER - EMPLOYEE
+# --------------------------------------------------
+
+@router.post("/create")
+def create_handover(
+    request: CreateHandoverRequest,
+    authenticated=Depends(get_authenticated_client),
+):
+    client, current_user = authenticated
+
+    try:
+        result = client.rpc(
+            "create_handover",
+            {
+                "p_project_id": request.project_id,
+                "p_comments": request.comments,
+            },
+        ).execute()
+
+        handover = result.data
+
+        if isinstance(handover, list):
+            handover = handover[0] if handover else None
+
+        if not handover:
+            raise HTTPException(
+                status_code=500,
+                detail="The server did not return the created handover.",
+            )
+
+        return {
+            "message": "Handover created successfully.",
+            "handover": handover,
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        error_message = str(error).lower()
+
+        print("Handover creation error:", error)
+
+        if "active handover already exists" in error_message:
+            raise HTTPException(
+                status_code=409,
+                detail="An active handover already exists for this project.",
+            )
+
+        if "not an employee assigned" in error_message:
+            raise HTTPException(
+                status_code=403,
+                detail="You are not assigned to this project as an employee.",
+            )
+
+        if "only employees" in error_message:
+            raise HTTPException(
+                status_code=403,
+                detail="Only employees can create handovers.",
+            )
+
+        if "authentication required" in error_message:
+            raise HTTPException(
+                status_code=401,
+                detail="Authentication is required to create a handover.",
+            )
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to create handover. Please try again.",
+        )
+
+
+# --------------------------------------------------
+# EMPLOYEE CONFIRMATION
+# --------------------------------------------------
+
 @router.post("/{handover_id}/confirm")
 def confirm_handover(
     handover_id: str,
@@ -157,6 +239,10 @@ def confirm_handover(
         )
 
 
+# --------------------------------------------------
+# MANAGER APPROVAL
+# --------------------------------------------------
+
 @router.post("/{handover_id}/approve")
 def approve_handover(
     handover_id: str,
@@ -172,7 +258,10 @@ def approve_handover(
 
         confirmation = handover.get("employee_confirmation") or {}
 
-        if not confirmation.get("confirmed_at") and confirmation.get("status") != "confirmed":
+        if (
+            not confirmation.get("confirmed_at")
+            and confirmation.get("status") != "confirmed"
+        ):
             raise HTTPException(
                 status_code=400,
                 detail="The outgoing employee must confirm the handover first.",
@@ -218,6 +307,10 @@ def approve_handover(
             detail=str(error),
         )
 
+
+# --------------------------------------------------
+# MANAGER REQUESTS CHANGES
+# --------------------------------------------------
 
 @router.post("/{handover_id}/request-changes")
 def request_handover_changes(
@@ -286,6 +379,10 @@ def request_handover_changes(
         )
 
 
+# --------------------------------------------------
+# MANAGER SHARES HANDOVER
+# --------------------------------------------------
+
 @router.post("/{handover_id}/share")
 def share_handover(
     handover_id: str,
@@ -301,7 +398,10 @@ def share_handover(
 
         approval = handover.get("manager_approval") or {}
 
-        if handover.get("status") not in ("approved", "shared") or approval.get("status") != "approved":
+        if (
+            handover.get("status") not in ("approved", "shared")
+            or approval.get("status") != "approved"
+        ):
             raise HTTPException(
                 status_code=400,
                 detail="Approve the handover before sharing it.",
@@ -379,6 +479,10 @@ def share_handover(
             detail=str(error),
         )
 
+
+# --------------------------------------------------
+# MANAGER REVOKES INCOMING ACCESS
+# --------------------------------------------------
 
 @router.post("/{handover_id}/revoke")
 def revoke_handover_access(

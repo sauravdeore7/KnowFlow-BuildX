@@ -1,12 +1,13 @@
-// Coloured pill. StatusBadge picks the label and colour from data/statusConfig.js.
+
+ // Coloured pill. StatusBadge picks the label and colour from data/statusConfig.js.
 import { HANDOVER_STATUS, PROJECT_STATUS } from '../../data/statusConfig'
 
 const TONES = {
-  success: 'bg-emerald-50 text-emerald-700 ring-emerald-600/20',
-  warning: 'bg-amber-50 text-amber-700 ring-amber-600/20',
-  info: 'bg-blue-50 text-blue-700 ring-blue-600/20',
-  neutral: 'bg-slate-100 text-slate-600 ring-slate-500/20',
-  danger: 'bg-red-50 text-red-700 ring-red-600/20',
+  success: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/25',
+  warning: 'bg-amber-500/15 text-amber-300 ring-amber-400/25',
+  info: 'bg-sky-500/15 text-sky-300 ring-sky-400/25',
+  neutral: 'bg-slate-500/15 text-slate-300 ring-slate-400/25',
+  danger: 'bg-red-500/15 text-red-300 ring-red-400/25',
 }
 
 export default function Badge({ tone = 'neutral', children, className = '' }) {

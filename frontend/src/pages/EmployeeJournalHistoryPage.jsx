@@ -46,19 +46,19 @@ function getTaskCount(entries) {
 
 function MetricCard({ label, value, description, icon }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:border-violet-500/25 hover:shadow-xl hover:shadow-black/20">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-500">{label}</p>
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+        <p className="text-sm font-medium text-text-muted">{label}</p>
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10 text-violet-300">
           <Icon name={icon} className="h-5 w-5" />
         </span>
       </div>
 
-      <p className="mt-4 text-3xl font-bold tracking-tight text-slate-900">
+      <p className="mt-4 text-3xl font-bold tracking-tight text-text-primary">
         {value}
       </p>
 
-      <p className="mt-1 text-xs text-slate-500">{description}</p>
+      <p className="mt-1 text-xs text-text-muted">{description}</p>
     </div>
   )
 }
@@ -67,20 +67,20 @@ function DetailSection({ title, content, color = 'slate' }) {
   if (!content?.trim()) return null
 
   const styles = {
-    slate: 'border-slate-200 bg-slate-50',
-    green: 'border-green-100 bg-green-50',
-    amber: 'border-amber-100 bg-amber-50',
-    blue: 'border-blue-100 bg-blue-50',
-    red: 'border-red-100 bg-red-50',
-    violet: 'border-violet-100 bg-violet-50',
+    slate: 'border-border bg-surface',
+    green: 'border-emerald-500/20 bg-emerald-500/10',
+    amber: 'border-amber-500/20 bg-amber-500/10',
+    blue: 'border-sky-500/20 bg-sky-500/10',
+    red: 'border-rose-500/20 bg-rose-500/10',
+    violet: 'border-violet-500/20 bg-violet-500/10',
   }
 
   return (
     <div className={`rounded-xl border p-3 ${styles[color]}`}>
-      <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+      <p className="mb-1 text-xs font-bold uppercase tracking-wide text-text-muted">
         {title}
       </p>
-      <p className="whitespace-pre-line text-sm leading-6 text-slate-700">
+      <p className="whitespace-pre-line text-sm leading-6 text-text-secondary">
         {content}
       </p>
     </div>
@@ -91,36 +91,36 @@ function JournalCard({ entry, expanded, onToggle }) {
   const { journal, project } = entry
 
   return (
-    <article className="relative ml-3 border-l-2 border-blue-100 pb-7 pl-7 last:border-l-transparent last:pb-0">
-      <span className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-[3px] border-blue-500 bg-white" />
+    <article className="relative ml-3 border-l-2 border-violet-500/25 pb-7 pl-7 last:border-l-transparent last:pb-0">
+      <span className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-[3px] border-violet-400 bg-surface-raised" />
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-200 hover:shadow-md">
+      <div className="rounded-2xl border border-border bg-surface-raised p-5 shadow-lg shadow-black/10 transition hover:border-violet-500/25 hover:shadow-xl hover:shadow-black/15">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-violet-300">
               {formatDate(journal.date || journal.createdAt)}
             </p>
 
-            <h3 className="mt-1 text-base font-bold text-slate-900">
+            <h3 className="mt-1 text-base font-bold text-text-primary">
               {project.name}
             </h3>
 
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-text-muted">
               {entry.memberRole || 'Project Member'}
               {journal.createdAt && ` · ${formatTime(journal.createdAt)}`}
             </p>
           </div>
 
-          <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+          <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300">
             Submitted
           </span>
         </div>
 
         <div className="mt-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
+          <p className="text-xs font-bold uppercase tracking-wide text-text-faint">
             Work Summary
           </p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <p className="mt-2 text-sm leading-6 text-text-secondary">
             {journal.workSummary || 'No work summary provided.'}
           </p>
         </div>
@@ -128,10 +128,10 @@ function JournalCard({ entry, expanded, onToggle }) {
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {journal.completedTasks?.trim() && (
             <div className="flex gap-2">
-              <Icon name="checkCircle" className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
+              <Icon name="checkCircle" className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
               <div>
-                <p className="text-xs font-semibold text-slate-700">Completed</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500 line-clamp-2 whitespace-pre-line">
+                <p className="text-xs font-semibold text-text-secondary">Completed</p>
+                <p className="mt-1 text-xs leading-5 text-text-muted line-clamp-2 whitespace-pre-line">
                   {journal.completedTasks}
                 </p>
               </div>
@@ -140,10 +140,10 @@ function JournalCard({ entry, expanded, onToggle }) {
 
           {journal.blockers?.trim() && (
             <div className="flex gap-2">
-              <Icon name="alert" className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+              <Icon name="alert" className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
               <div>
-                <p className="text-xs font-semibold text-slate-700">Blockers</p>
-                <p className="mt-1 text-xs leading-5 text-slate-500 line-clamp-2 whitespace-pre-line">
+                <p className="text-xs font-semibold text-text-secondary">Blockers</p>
+                <p className="mt-1 text-xs leading-5 text-text-muted line-clamp-2 whitespace-pre-line">
                   {journal.blockers}
                 </p>
               </div>
@@ -152,7 +152,7 @@ function JournalCard({ entry, expanded, onToggle }) {
         </div>
 
         {expanded && (
-          <div className="mt-5 grid gap-3 border-t border-slate-100 pt-5">
+          <div className="mt-5 grid gap-3 border-t border-border pt-5">
             <DetailSection title="Work Summary" content={journal.workSummary} />
             <DetailSection title="Completed Tasks" content={journal.completedTasks} color="green" />
             <DetailSection title="Decisions Made" content={journal.decisions} color="violet" />
@@ -162,15 +162,15 @@ function JournalCard({ entry, expanded, onToggle }) {
             <DetailSection title="Next Steps" content={journal.nextSteps} color="blue" />
             <DetailSection title="Evidence / References" content={journal.evidence} />
 
-            <div className="flex flex-wrap justify-between gap-2 border-t border-slate-100 pt-3 text-xs text-slate-400">
+            <div className="flex flex-wrap justify-between gap-2 border-t border-border pt-3 text-xs text-text-faint">
               <span>Submitted by {journal.createdBy}</span>
               <span>{formatDate(journal.createdAt || journal.date)}</span>
             </div>
           </div>
         )}
 
-        <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
-          <p className="text-xs text-slate-400">
+        <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+          <p className="text-xs text-text-faint">
             {formatTime(journal.createdAt)}
             {journal.createdAt ? ' · Submission time' : 'Journal record'}
           </p>
@@ -178,7 +178,7 @@ function JournalCard({ entry, expanded, onToggle }) {
           <button
             type="button"
             onClick={onToggle}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-blue-700 transition hover:text-blue-900"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-violet-300 transition hover:text-violet-200"
           >
             {expanded ? 'Show Less' : 'View Journal'}
             <Icon
@@ -304,18 +304,18 @@ export default function EmployeeJournalHistoryPage() {
       <section>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-blue-700">
+            <p className="text-xs font-bold uppercase tracking-widest text-violet-300">
               Employee Workspace
             </p>
-            <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">
+            <h1 className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
               Journal History
             </h1>
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-2 text-sm text-text-muted">
               Review your previously submitted work journals and project progress.
             </p>
           </div>
 
-          <span className="rounded-full border border-blue-200 bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-800">
+          <span className="rounded-full border border-violet-400/20 bg-violet-500/10 px-4 py-2 text-xs font-semibold text-violet-300">
             <span className="inline-flex items-center gap-2">
               <Icon name="lock" className="h-3.5 w-3.5" />
               Personal Records
@@ -347,19 +347,19 @@ export default function EmployeeJournalHistoryPage() {
         />
       </section>
 
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-100 p-5 sm:p-6">
+      <section className="overflow-hidden rounded-2xl border border-border bg-surface-raised shadow-lg shadow-black/10">
+        <div className="border-b border-border p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">
+              <h2 className="text-lg font-bold text-text-primary">
                 Your Submitted Journals
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-text-muted">
                 Your personal work records, arranged from newest to oldest.
               </p>
             </div>
 
-            <span className="rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700">
+            <span className="rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-300">
               Newest First
             </span>
           </div>
@@ -368,14 +368,14 @@ export default function EmployeeJournalHistoryPage() {
             <div className="relative flex-1">
               <Icon
                 name="search"
-                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
               />
               <input
                 type="search"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search journals..."
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-50"
+                className="w-full rounded-xl border border-border bg-surface py-3 pl-10 pr-4 text-sm text-text-primary outline-none transition placeholder:text-text-faint focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
               />
             </div>
 
@@ -384,8 +384,8 @@ export default function EmployeeJournalHistoryPage() {
               onClick={() => setFilterOpen(!filterOpen)}
               className={`inline-flex items-center justify-center gap-2 rounded-xl border px-5 py-3 text-sm font-semibold transition ${
                 filterOpen || hasActiveFilters
-                  ? 'border-blue-300 bg-blue-50 text-blue-700'
-                  : 'border-slate-200 bg-white text-slate-700 hover:border-blue-300'
+                  ? 'border-violet-500/30 bg-violet-500/10 text-violet-300'
+                  : 'border-border bg-surface text-text-secondary hover:border-violet-500/30 hover:text-text-primary'
               }`}
             >
               <Icon name="listChecks" className="h-4 w-4" />
@@ -395,14 +395,14 @@ export default function EmployeeJournalHistoryPage() {
           </div>
 
           {filterOpen && (
-            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mt-4 rounded-xl border border-border bg-surface p-4">
               <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-xs font-semibold text-slate-600">
+                <label className="text-xs font-semibold text-text-secondary">
                   Project
                   <select
                     value={selectedProject}
                     onChange={(event) => setSelectedProject(event.target.value)}
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-700 outline-none focus:border-blue-500"
+                    className="mt-2 w-full rounded-lg border border-border bg-surface-raised px-3 py-2.5 text-sm font-normal text-text-primary outline-none focus:border-violet-500"
                   >
                     <option value="all">All Projects</option>
                     {projects.map((project) => (
@@ -413,12 +413,12 @@ export default function EmployeeJournalHistoryPage() {
                   </select>
                 </label>
 
-                <label className="text-xs font-semibold text-slate-600">
+                <label className="text-xs font-semibold text-text-secondary">
                   Date Range
                   <select
                     value={dateRange}
                     onChange={(event) => setDateRange(event.target.value)}
-                    className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-700 outline-none focus:border-blue-500"
+                    className="mt-2 w-full rounded-lg border border-border bg-surface-raised px-3 py-2.5 text-sm font-normal text-text-primary outline-none focus:border-violet-500"
                   >
                     <option value="all">All Time</option>
                     <option value="today">Today</option>
@@ -431,25 +431,25 @@ export default function EmployeeJournalHistoryPage() {
 
               {dateRange === 'custom' && (
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <label className="text-xs font-semibold text-slate-600">
+                  <label className="text-xs font-semibold text-text-secondary">
                     From
                     <input
                       type="date"
                       value={startDate}
                       max={endDate || undefined}
                       onChange={(event) => setStartDate(event.target.value)}
-                      className="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-700"
+                      className="mt-2 block w-full rounded-lg border border-border bg-surface-raised px-3 py-2.5 text-sm font-normal text-text-primary"
                     />
                   </label>
 
-                  <label className="text-xs font-semibold text-slate-600">
+                  <label className="text-xs font-semibold text-text-secondary">
                     To
                     <input
                       type="date"
                       value={endDate}
                       min={startDate || undefined}
                       onChange={(event) => setEndDate(event.target.value)}
-                      className="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal text-slate-700"
+                      className="mt-2 block w-full rounded-lg border border-border bg-surface-raised px-3 py-2.5 text-sm font-normal text-text-primary"
                     />
                   </label>
                 </div>
@@ -459,7 +459,7 @@ export default function EmployeeJournalHistoryPage() {
                 <button
                   type="button"
                   onClick={clearFilters}
-                  className="text-xs font-semibold text-blue-700 hover:text-blue-900"
+                  className="text-xs font-semibold text-violet-300 hover:text-violet-200"
                 >
                   Reset Filters
                 </button>
@@ -470,7 +470,7 @@ export default function EmployeeJournalHistoryPage() {
 
         <div className="p-5 sm:p-6">
           <div className="mb-6 flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold text-slate-700">
+            <p className="text-sm font-semibold text-text-secondary">
               {filteredJournals.length}{' '}
               {filteredJournals.length === 1 ? 'journal' : 'journals'} found
             </p>
@@ -479,7 +479,7 @@ export default function EmployeeJournalHistoryPage() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="text-xs font-semibold text-blue-700 hover:text-blue-900"
+                className="text-xs font-semibold text-violet-300 hover:text-violet-200"
               >
                 Clear all
               </button>
@@ -508,18 +508,18 @@ export default function EmployeeJournalHistoryPage() {
               })}
             </div>
           ) : (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-5 py-12 text-center">
-              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+            <div className="rounded-xl border border-dashed border-border bg-surface px-5 py-12 text-center">
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10 text-violet-300">
                 <Icon name="bookOpen" className="h-7 w-7" />
               </span>
 
-              <h3 className="mt-4 text-base font-bold text-slate-800">
+              <h3 className="mt-4 text-base font-bold text-text-primary">
                 {journals.length
                   ? 'No matching journals found'
                   : 'No journal entries yet'}
               </h3>
 
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-text-muted">
                 {journals.length
                   ? 'Try changing your search or filters to find your journals.'
                   : 'Your submitted daily work journals will appear here.'}
@@ -529,17 +529,17 @@ export default function EmployeeJournalHistoryPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-5 sm:p-6">
+      <section className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 via-surface-raised to-indigo-500/10 p-5 sm:p-6">
         <div className="flex items-start gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-700 text-white">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-violet-500/20 bg-violet-500/15 text-violet-300">
             <Icon name="sparkles" className="h-5 w-5" />
           </span>
 
           <div>
-            <h2 className="text-base font-bold text-blue-950">
+            <h2 className="text-base font-bold text-text-primary">
               Your Work Builds Project Knowledge
             </h2>
-            <p className="mt-1 text-sm leading-6 text-blue-900">
+            <p className="mt-1 text-sm leading-6 text-text-secondary">
               Your daily journal entries contribute to cumulative project
               knowledge. When a handover is initiated, the captured activity
               can be consolidated into a handover report for review and approval.
@@ -547,7 +547,7 @@ export default function EmployeeJournalHistoryPage() {
           </div>
         </div>
 
-        <p className="mt-4 border-t border-blue-200 pt-3 text-xs leading-5 text-blue-800">
+        <p className="mt-4 border-t border-border pt-3 text-xs leading-5 text-text-muted">
           Daily journal entries are personal work records and are not
           individually sent for manager approval.
         </p>

@@ -1,3 +1,4 @@
+
 // Circle with the person's initials.
 import { getInitials } from '../../utils/helpers'
 
@@ -11,8 +12,9 @@ export default function Avatar({ name, size = 'md', className = '' }) {
   return (
     <span
       title={name}
-      className={`inline-flex shrink-0 items-center justify-center rounded-full bg-brand-100
-        font-semibold text-brand-700 ${SIZES[size]} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full
+        border border-violet-400/20 bg-violet-500/15
+        font-semibold text-violet-300 ${SIZES[size]} ${className}`}
     >
       {getInitials(name)}
     </span>

@@ -19,11 +19,16 @@ def login(request: LoginRequest):
         client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
         auth_response = client.auth.sign_in_with_password({
-            "email": request.email,
+            "email": request.email.strip(),
             "password": request.password
         })
 
-    except Exception:
+    except Exception as error:
+        print(
+            "Supabase login error:",
+            type(error).__name__,
+            str(error)
+        )
         raise HTTPException(
             status_code=401,
             detail="Invalid email or password"

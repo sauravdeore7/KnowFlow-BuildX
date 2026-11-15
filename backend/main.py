@@ -7,8 +7,12 @@ from routes.projects import router as projects_router
 from routes.journals import router as journals_router
 from routes.documents import router as documents_router
 from routes.knowledge import router as knowledge_router
+from routes.knowledge_portfolio import router as knowledge_portfolio_router
 from routes.handovers import router as handovers_router
 from routes.support import router as support_router
+from routes.audit import router as audit_router
+from routes.reports import router as reports_router
+from routes.contributions import router as contributions_router
 
 
 app = FastAPI(
@@ -25,6 +29,8 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "http://localhost:5174",
         "http://127.0.0.1:5174",
+        "http://localhost:5176",
+        "http://127.0.0.1:5176",
         "https://knowflow-six.vercel.app"
     ],
     allow_credentials=True,
@@ -38,8 +44,12 @@ app.include_router(projects_router)
 app.include_router(journals_router)
 app.include_router(documents_router)
 app.include_router(knowledge_router)
+app.include_router(knowledge_portfolio_router)
 app.include_router(handovers_router)
 app.include_router(support_router)
+app.include_router(audit_router)
+app.include_router(reports_router)
+app.include_router(contributions_router)
 
 
 @app.get("/")

@@ -1,13 +1,17 @@
-// Reusable button. variant: primary | secondary | ghost | danger. size: sm | md | lg.
+
+ // Reusable button. variant: primary | secondary | ghost | danger. size: sm | md | lg.
 import Spinner from './Spinner'
 
 const VARIANTS = {
-  primary: 'bg-brand-600 text-white hover:bg-brand-700 focus-visible:outline-brand-600',
+  primary:
+    'bg-brand-600 text-white shadow-lg shadow-violet-950/20 hover:bg-brand-700 focus-visible:outline-violet-500',
   secondary:
-    'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 ' +
-    'focus-visible:outline-slate-400',
-  ghost: 'text-slate-600 hover:bg-slate-100 focus-visible:outline-slate-400',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600',
+    'border border-border bg-surface-raised text-text-primary hover:bg-surface-hover ' +
+    'focus-visible:outline-violet-500',
+  ghost:
+    'text-text-secondary hover:bg-surface-hover hover:text-text-primary focus-visible:outline-violet-500',
+  danger:
+    'border border-red-500/30 bg-red-500/15 text-red-300 hover:bg-red-500/25 focus-visible:outline-red-400',
 }
 
 const SIZES = {

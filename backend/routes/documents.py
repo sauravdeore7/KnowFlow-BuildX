@@ -16,6 +16,7 @@ from fastapi import (
 from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from storage3 import SyncStorageClient
+from pydantic import BaseModel, Field
 from supabase import create_client
 
 from config import SUPABASE_URL, SUPABASE_KEY
@@ -27,6 +28,10 @@ security = HTTPBearer(auto_error=False)
 
 BUCKET_NAME = "project-documents"
 MAX_FILE_SIZE = 10 * 1024 * 1024
+
+
+class RenameDocumentRequest(BaseModel):
+    name: str = Field(min_length=1, max_length=255)
 
 ALLOWED_EXTENSIONS = {
     ".pdf",
@@ -279,6 +284,98 @@ def download_document(
         raise HTTPException(
             status_code=500,
             detail="Unable to download document"
+        )
+
+
+
+@router.patch("/{document_id}")
+def rename_document(
+    document_id: str,
+    request: RenameDocumentRequest,
+    authenticated=Depends(get_authenticated_client)
+):
+    client, current_user, token = authenticated
+
+    try:
+        document = get_document(client, document_id)
+
+        # Only the project owner can rename a document.
+        project_response = (
+            client.table("projects")
+            .select("created_by")
+            .eq("id", document["project_id"])
+            .maybe_single()
+            .execute()
+        )
+
+        project = project_response.data
+
+        if (
+            not project
+            or project["created_by"] != str(current_user.id)
+        ):
+            raise HTTPException(
+                status_code=403,
+                detail="Only the project owner can rename documents"
+            )
+
+        new_name = request.name.strip()
+        old_name = document["name"]
+
+        # Reject empty names and path-based filenames.
+        if (
+            not new_name
+            or "/" in new_name
+            or "\\" in new_name
+            or PurePosixPath(new_name).name != new_name
+            or any(ord(character) < 32 for character in new_name)
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail="Please enter a valid document filename"
+            )
+
+        # Preserve the original file extension.
+        original_extension = PurePosixPath(old_name).suffix.lower()
+        new_extension = PurePosixPath(new_name).suffix.lower()
+
+        if (
+            original_extension not in ALLOWED_EXTENSIONS
+            or new_extension != original_extension
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail="The original file extension must be preserved"
+            )
+
+        if new_name == old_name:
+            raise HTTPException(
+                status_code=400,
+                detail="The new filename is the same as the current name"
+            )
+
+        # Update only the name. The actual Storage file is unchanged.
+        response = (
+            client.table("documents")
+            .update({"name": new_name})
+            .eq("id", document_id)
+            .select("id, name, file_type, size_bytes")
+            .single()
+            .execute()
+        )
+
+        return {
+            "message": "Document renamed successfully",
+            "document": response.data
+        }
+
+    except HTTPException:
+        raise
+    except Exception as error:
+        print("Document rename error:", error)
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to rename document"
         )
 
 

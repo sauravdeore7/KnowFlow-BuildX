@@ -1,7 +1,13 @@
+
 // Four-step tracker: documents -> extraction -> manager review -> approved.
 import Icon from '../common/Icon'
 
-const STEPS = ['Authorised documents', 'AI extraction', 'Manager review', 'Approved']
+const STEPS = [
+  'Authorised documents',
+  'AI extraction',
+  'Manager review',
+  'Approved',
+]
 
 // Returns how many steps are finished for a project.
 function completedSteps(project) {
@@ -24,27 +30,40 @@ export default function HandoverProgress({ project }) {
       {STEPS.map((step, index) => {
         const complete = index < done
         const current = index === done
+
         return (
           <li key={step} className="flex items-center gap-3">
             <span
-              className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm
-                font-semibold ${
+              className={`flex h-8 w-8 shrink-0 items-center justify-center
+                rounded-full text-sm font-semibold ${
                   complete
                     ? 'bg-emerald-100 text-emerald-700'
                     : current
                       ? 'bg-brand-600 text-white'
-                      : 'bg-slate-100 text-slate-400'
+                      : 'bg-slate-100 text-slate-500'
                 }`}
             >
-              {complete ? <Icon name="checkCircle" className="h-5 w-5" /> : index + 1}
+              {complete ? (
+                <Icon name="checkCircle" className="h-5 w-5" />
+              ) : (
+                index + 1
+              )}
             </span>
+
             <span
               className={`text-sm ${
-                complete || current ? 'font-medium text-slate-900' : 'text-slate-400'
+                complete || current
+                  ? 'font-medium text-text-primary'
+                  : 'text-text-muted'
               }`}
             >
               {step}
-              {current && <span className="ml-2 text-xs text-brand-600">In progress</span>}
+
+              {current && (
+                <span className="ml-2 text-xs font-medium text-violet-300">
+                  In progress
+                </span>
+              )}
             </span>
           </li>
         )
