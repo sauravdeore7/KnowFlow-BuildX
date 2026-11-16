@@ -34,6 +34,7 @@ const PATHS = {
     </>
   ),
   upload: <path d="M12 16V4m0 0L8 8m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />,
+  download: <path d="M12 4v12m0 0 4-4m-4 4-4-4M4 18v2h16v-2" />,
   sparkles: (
     <>
       <path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8L12 3z" />
@@ -94,6 +95,7 @@ const PATHS = {
     </>
   ),
   arrowLeft: <path d="M19 12H5M11 6l-6 6 6 6" />,
+  arrowLeftRight: <path d="M17 8H3m0 0 4-4M3 8l4 4m0 4h14m0 0-4-4m4 4-4 4" />,
   clock: (
     <>
       <circle cx="12" cy="12" r="9" />
@@ -169,8 +171,6 @@ const PATHS = {
       <path d="M7 6h3M14 6h3M6.5 7.5l4 8.5M17.5 7.5l-4 8.5" />
     </>
   ),
-
-  // Additional icons
   helpCircle: (
     <>
       <circle cx="12" cy="12" r="9" />
@@ -196,14 +196,43 @@ const PATHS = {
       <path d="m9 12 2 2 4-4" />
     </>
   ),
-  mousePointerClick: (
+  sliders: (
     <>
-      <path d="m5 3 14 11-7 1-3 7L5 3z" />
-      <path d="m14 14 5 5M19 3v4M21 9h-4" />
+      <path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3" />
+      <path d="M2 14h4M10 8h4M18 16h4" />
     </>
   ),
-
-  // AI Knowledge Podcast
+  refreshCw: (
+    <>
+      <path d="M20 7v5h-5M4 17v-5h5" />
+      <path d="M5.6 9a7 7 0 0 1 11.6-2L20 12M4 12l2.8 5a7 7 0 0 0 11.6-2" />
+    </>
+  ),
+  loader: (
+    <>
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+    </>
+  ),
+  gitBranch: (
+    <>
+      <circle cx="6" cy="3" r="2" />
+      <circle cx="6" cy="21" r="2" />
+      <circle cx="18" cy="6" r="2" />
+      <path d="M6 5v14M18 8a6 6 0 0 1-6 6H6" />
+    </>
+  ),
+  fileBarChart: (
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6M8 18v-3M12 18v-6M16 18v-5" />
+    </>
+  ),
+  printer: (
+    <>
+      <path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <path d="M6 14h12v7H6zM17 12h.01" />
+    </>
+  ),
   headphones: (
     <>
       <path d="M3 14v-3a9 9 0 0 1 18 0v3" />
@@ -211,8 +240,6 @@ const PATHS = {
       <path d="M21 14h-3v6h1a2 2 0 0 0 2-2v-4z" />
     </>
   ),
-
-  // Knowledge Portfolio
   award: (
     <>
       <circle cx="12" cy="8" r="6" />
@@ -220,14 +247,29 @@ const PATHS = {
       <path d="m9.5 8 1.7 1.7L14.5 6" />
     </>
   ),
-
+  mousePointerClick: (
+    <>
+      <path d="m5 3 14 11-7 1-3 7L5 3z" />
+      <path d="m14 14 5 5M19 3v4M21 9h-4" />
+    </>
+  ),
   chevronRight: <path d="m9 18 6-6-6-6" />,
 }
+
+const FALLBACK_ICON = (
+  <>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M9.6 9a2.5 2.5 0 1 1 4.3 1.8c-1 .9-1.9 1.2-1.9 2.7" />
+    <path d="M12 17h.01" />
+  </>
+)
 
 export default function Icon({ name, className = 'h-5 w-5' }) {
   const normalizedName = name?.replace(/-([a-z])/g, (_, letter) =>
     letter.toUpperCase(),
   )
+
+  const icon = PATHS[name] ?? PATHS[normalizedName] ?? FALLBACK_ICON
 
   return (
     <svg
@@ -240,7 +282,7 @@ export default function Icon({ name, className = 'h-5 w-5' }) {
       className={className}
       aria-hidden="true"
     >
-      {PATHS[name] ?? PATHS[normalizedName] ?? null}
+      {icon}
     </svg>
   )
 }
