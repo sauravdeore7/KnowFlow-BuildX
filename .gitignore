@@ -28,3 +28,7 @@ __pycache__/
 backend/revoke_sessions.py
 backend/test_supabase.py
 backend/knowflow_test_document.txt
+
+# Private and local files
+KnowFlow_Current.zip
+backend/reset_manager_password.py
